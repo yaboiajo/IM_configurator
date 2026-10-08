@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Implement" />
+<meta name="apple-mobile-web-app-title" content="Transformation Studio" />
 <meta name="theme-color" content="#1F1F23" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
@@ -34,7 +34,12 @@
     --font-body: Arial, Helvetica, sans-serif;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body, .app {
+    touch-action: manipulation;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+  }
   /* Full-screen behaviour on iPad when launched from the Home Screen */
   html { height: 100%; }
   body { overscroll-behavior: none; }
@@ -75,12 +80,13 @@
   }
   .stepper .step.active { color: var(--im-blue-green); border-bottom-color: var(--im-blue-green); font-weight: 700; }
   .stepper .step.done { color: var(--im-ash); }
+  .stepper .step .tick { color: var(--im-blue-green); margin-right: 0.3rem; font-weight: 700; }
 
   main.layout { flex: 1; display: flex; min-height: 0; }
   @media (max-width: 880px) { main.layout { flex-direction: column; } }
 
   .visual-panel {
-    flex: 1.5; background: var(--im-white); position: relative;
+    flex: 1.22; background: var(--im-white); position: relative;
     display: flex; flex-direction: column; min-height: 0;
     border-right: 1px solid var(--im-blue-green-light);
   }
@@ -367,15 +373,6 @@
   .btn-secondary:disabled { opacity: 0.3; cursor: not-allowed; }
   .btn:active:not(:disabled) { transform: scale(0.97); }
 
-  .build-rail {
-    flex-shrink: 0; display: flex; align-items: center; gap: 0.5rem;
-    padding: 0.45rem 1.25rem; background: var(--im-ash); overflow-x: auto; min-height: 2.3rem;
-  }
-  .build-rail .rail-label { font-size: 0.66rem; color: var(--im-grey); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
-  .rail-chip { background: var(--im-blue-green); color: white; font-size: 0.66rem; font-weight: 700; padding: 0.22rem 0.55rem; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
-  .rail-chip.dim { background: transparent; border: 1px solid var(--im-blue-green-60); color: var(--im-green-grey); }
-  .rail-empty { color: var(--im-grey); font-size: 0.7rem; font-style: italic; }
-
   .attract {
     position: absolute; inset: 0; background: var(--im-black);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -392,6 +389,100 @@
   }
   .attract .tap { margin-top: 2.5rem; font-size: 0.8rem; color: var(--im-green-grey); text-transform: uppercase; letter-spacing: 0.1em; animation: pulse 1.8s infinite ease-in-out; }
   @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+
+  /* =====================================================================
+     iPad Pro (landscape) — comfortable native-app sizing, ≥44pt targets
+     ===================================================================== */
+  @media (min-width: 1024px) {
+    header.top { padding: 1rem 2.2rem; }
+    header.top .logo { font-size: 1.2rem; }
+    header.top .headline { font-size: 1.3rem; }
+
+    .stepper .step { padding: 0.9rem 0.6rem; font-size: 0.8rem; }
+
+    .stage-plate { font-size: 0.8rem; top: 1rem; left: 1.6rem; }
+    .spec-cell { padding: 0.75rem 1.1rem 0.8rem; min-width: 120px; }
+    .spec-cell .k { font-size: 0.62rem; }
+    .spec-cell .v { font-size: 0.86rem; }
+
+    .config-body { padding: 1.6rem 1.9rem 1.2rem; }
+    .config-panel h2 { font-size: 1.8rem; }
+    .config-panel .sub { font-size: 0.98rem; margin-bottom: 0.8rem; }
+    .explain { font-size: 0.84rem; padding: 0.7rem 0.95rem; margin-bottom: 1.2rem; }
+
+    /* Ambition cards */
+    .proj { padding: 1rem 1.1rem; min-height: 92px; }
+    .proj .name { font-size: 1rem; }
+    .proj .desc { font-size: 0.82rem; margin-top: 0.25rem; }
+    .proj .body-tag { font-size: 0.68rem; margin-top: 0.45rem; }
+
+    /* Expertise tiles: two columns, bigger targets */
+    .tile-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+    .tile { padding: 0.95rem 3rem 0.95rem 1rem; min-height: 88px; }
+    .tile .pname { font-size: 0.98rem; }
+    .tile .desc { font-size: 0.82rem; }
+    .tile .ord { font-size: 0.68rem; padding: 0.12rem 0.42rem; }
+    .tile .sug { font-size: 0.6rem; }
+    .tile .info-btn { width: 40px; height: 40px; font-size: 0.95rem; top: 8px; right: 8px; }
+    .tile .info-panel { font-size: 0.82rem; }
+    .band-head .b-label { font-size: 0.76rem; }
+    .band-head .b-note { font-size: 0.76rem; }
+
+    /* Powertrain */
+    .engine-summary { padding: 1rem 1.2rem; }
+    .engine-summary .out { font-size: 2.3rem; }
+    .engine-summary .out small { font-size: 0.76rem; }
+    .engine-summary .cfg { font-size: 0.88rem; }
+    .role-row { padding: 0.85rem 1rem; }
+    .role-row .info .name { font-size: 0.98rem; }
+    .role-row .info .meta { font-size: 0.8rem; }
+    .role-row .hp-each { font-size: 1.1rem; width: 4rem; }
+    .step-ctrl { gap: 0.55rem; }
+    .step-ctrl button { width: 50px; height: 50px; font-size: 1.4rem; }
+    .step-ctrl .cnt { width: 1.9rem; font-size: 1.15rem; }
+
+    /* Packages */
+    .pkg-card { padding: 1rem 1.15rem; min-height: 84px; }
+    .pkg-card .chk { width: 26px; height: 26px; margin-top: 3px; }
+    .pkg-card.selected .chk::after { width: 11px; height: 7px; border-left-width: 2.5px; border-bottom-width: 2.5px; }
+    .pkg-card .txt .name { font-size: 1rem; }
+    .pkg-card .txt .desc { font-size: 0.84rem; }
+    .pkg-card .txt .fit { font-size: 0.7rem; }
+    .mfk { font-size: 0.62rem; padding: 0.26rem 0.6rem; top: 10px; right: 10px; }
+
+    /* Window sticker */
+    .st-head { padding: 1rem 1.2rem 1.1rem; }
+    .st-brand { font-size: 0.66rem; }
+    .st-model { font-size: 1.75rem; }
+    .st-sub { font-size: 0.8rem; }
+    .st-sec { padding: 0.85rem 1.2rem; }
+    .st-sec-t { font-size: 0.62rem; }
+    .st-line { font-size: 0.88rem; padding: 0.2rem 0; }
+    .st-narrative { font-size: 0.88rem; }
+    .st-foot { padding: 1rem 1.2rem; }
+    .st-foot-t { font-size: 1.1rem; }
+    .st-foot-p { font-size: 0.8rem; }
+    .c-name { font-size: 0.9rem; }
+    .c-mail { font-size: 0.82rem; }
+    #qrcode img, #qrcode canvas { width: 110px !important; height: 110px !important; }
+    .qr-hint { font-size: 0.66rem; max-width: 8rem; }
+
+    /* Footer nav — thumb-sized bars, Next gets the weight */
+    .config-footer { padding: 1rem 1.9rem; gap: 0.8rem; }
+    .btn { font-size: 0.86rem; padding: 0 1.6rem; min-height: 54px; display: inline-flex; align-items: center; justify-content: center; }
+    #nextBtn { flex: 1; max-width: 48%; }
+
+    /* Attract screen — readable from across the aisle */
+    .attract .a-logo { font-size: 1.25rem; margin-bottom: 2.4rem; }
+    .attract h1 { font-size: 3.6rem; }
+    .attract .a-vibe { font-size: 0.85rem; margin-top: 1.1rem; }
+    .attract .tap { font-size: 1rem; margin-top: 3rem; padding: 0.9rem 2rem; border: 1px solid var(--im-blue-green-60); border-radius: 2px; }
+
+    /* Staff panel */
+    .staff .panel { width: min(380px, 70vw); padding: 1.8rem; }
+    .staff .panel .btn { min-height: 54px; }
+  }
 
   #printArea { display: none; }
   @page { size: A4; margin: 10mm; }
@@ -446,8 +537,6 @@
     </section>
   </main>
 
-  <div class="build-rail" id="buildRail"></div>
-
   <div class="attract" id="attract">
     <div class="a-logo">IMPLEMENT CONSULTING GROUP<span>_</span></div>
     <h1>Build your <em>Implement</em> project.</h1>
@@ -484,7 +573,7 @@ const PROJECTS = [
     suggest:['Operations','Resilience','Digital'] },
   { id:'orgchange', name:'Rebuild how we work',     model:'SUV',                 desc:'Change the structure, roles and ways of working across the organisation.',
     suggest:['Transformation','People','Communication','Leadership'] },
-  { id:'pmi',       name:'Bring two together',      model:'Stretched Executive', desc:'Merge two organisations into one after a deal.',
+  { id:'pmi',       name:'Bring two together (PMI)', model:'Stretched Executive', desc:'Post-merger integration: merge two organisations into one after a deal.',
     suggest:['Transformation','Finance','Communication','People'] },
   { id:'digital',   name:'Put technology to work',  model:'Aero Sedan',          desc:'Make the business run on better technology and AI.',
     suggest:['Digital','Transformation','People'] },
@@ -687,7 +776,8 @@ function renderStepper() {
     let cls = 'step';
     if (i === state.stepIndex) cls += ' active';
     else if (i < state.stepIndex) cls += ' done';
-    return `<div class="${cls}" data-step="${i}">${STEP_LABELS[s]}</div>`;
+    const done = i < state.stepIndex;
+    return `<div class="${cls}" data-step="${i}">${done ? '<span class="tick">✓</span>' : ''}${STEP_LABELS[s]}</div>`;
   }).join('');
   [...el.children].forEach(child => {
     child.addEventListener('click', () => {
@@ -1427,25 +1517,6 @@ function renderSpecStrip() {
   `).join('');
 }
 
-/* ================= BUILD RAIL ================= */
-function renderBuildRail() {
-  const el = document.getElementById('buildRail');
-  const chips = [];
-  const proj = currentProject();
-  if (proj) chips.push({t: proj.model});
-  state.practices.forEach(id => chips.push({t:id}));
-  const people = totalPeople();
-  if (people) chips.push({t: totalHp() + ' hp · ' + motorLabel(people)});
-  state.packages.forEach(id => chips.push({t: PACKAGES.find(p=>p.id===id).tag, dim:true}));
-
-  el.innerHTML = `
-    <span class="rail-label">Your build so far</span>
-    ${chips.length
-      ? chips.map(c => `<span class="rail-chip ${c.dim?'dim':''}">${c.t}</span>`).join('')
-      : '<span class="rail-empty">Nothing selected yet</span>'}
-  `;
-}
-
 /* ================= NAV ================= */
 function canProceedFrom(stepIdx) {
   const step = STEPS[stepIdx];
@@ -1510,7 +1581,6 @@ function renderAll() {
   renderConfigBody();
   updateStage();
   renderSpecStrip();
-  renderBuildRail();
   renderFooter();
   resetIdle();
 }

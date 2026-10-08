@@ -1,10 +1,10 @@
 {
-  "name": "Build your Implement project",
-  "short_name": "Implement",
+  "name": "Implement Transformation Studio",
+  "short_name": "Transformation Studio",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "landscape",
   "background_color": "#1F1F23",
   "theme_color": "#1F1F23",
   "icons": [
