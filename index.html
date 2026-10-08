@@ -658,7 +658,7 @@ const PACKAGES = [
 ];
 
 const STEPS = ['project','paint','powertrain','packages','summary'];
-const STEP_LABELS = { project:'1. Ambition', paint:'2. Paint job', powertrain:'3. Powertrain', packages:'4. Packages', summary:'5. Your Build' };
+const STEP_LABELS = { project:'1. Model', paint:'2. Paint job', powertrain:'3. Powertrain', packages:'4. Packages', summary:'5. Your Build' };
 
 /* ================= STATE ================= */
 function freshState() {
@@ -950,8 +950,8 @@ function renderConfigBody() {
 
         <div class="st-foot">
           <div class="st-foot-l">
-            <div class="st-foot-t">Come say hello at the stand</div>
-            <div class="st-foot-p">We'd love to hear what you built — and talk about the real thing.</div>
+            <div class="st-foot-t">Do you want to hear more?</div>
+            <div class="st-foot-p">We'd love to talk about the real thing.</div>
             <div class="c-person"><div class="c-name">Henning Verner</div><div class="c-mail">heve@implement.se</div></div>
             <div class="c-person"><div class="c-name">Fraser Hall</div><div class="c-mail">frha@implement.dk</div></div>
           </div>
@@ -1123,7 +1123,7 @@ function buildPrintArea() {
     <div class="p-row"><div class="l">Optional equipment</div><div class="v">${state.packages.size ? [...state.packages].map(id => PACKAGES.find(p=>p.id===id).name).join(', ') : 'None'}</div></div>
     <div class="p-bottom">
       <div class="p-contacts">
-        <div class="t">Come say hello at the stand</div>
+        <div class="t">Do you want to hear more?</div>
         <div class="r">Henning Verner<br/><span>heve@implement.se</span></div>
         <div class="r">Fraser Hall<br/><span>frha@implement.dk</span></div>
       </div>
