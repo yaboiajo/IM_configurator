@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Build Your Implement Project</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --im-blue-green: #67817F;
+    --im-green-grey: #B9C7C2;
+    --im-black: #1F1F23;
+    --im-ash: #30373B;
+    --im-grey: #A8A5A1;
+    --im-egg: #F8F5E7;
+    --im-light-grey: #F2F2F1;
+    --im-white: #FFFFFF;
+
+    --im-blue-green-60: #A4B3B2;
+    --im-blue-green-30: #C2CDCC;
+    --im-blue-green-light: #E1E6E5;
+    --im-blue-green-near-white: #F1F4F3;
+    --im-green-grey-30: #E3E9E7;
+
+    --font-display: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+    --font-body: Arial, Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: var(--font-body);
+    background: var(--im-egg);
+    color: var(--im-black);
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+  }
+  button { font-family: var(--font-body); cursor: pointer; }
+
+  .app { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
+
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 2rem;
+    background: var(--im-white);
+    border-bottom: 1px solid var(--im-blue-green-light);
+    flex-shrink: 0;
+  }
+  header.top .logo { font-weight: 700; font-size: 1.05rem; letter-spacing: 0.03em; color: var(--im-black); user-select: none; }
+  header.top .logo span { color: var(--im-blue-green); }
+  header.top .headline { font-family: var(--font-display); font-size: 1.12rem; color: var(--im-ash); }
+  header.top .headline em { font-style: italic; color: var(--im-blue-green); }
+
+  .stepper { display: flex; background: var(--im-white); border-bottom: 1px solid var(--im-blue-green-light); flex-shrink: 0; overflow-x: auto; }
+  .stepper .step {
+    flex: 1; text-align: center; padding: 0.6rem 0.4rem;
+    font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--im-grey); border-bottom: 3px solid transparent;
+    white-space: nowrap; transition: all 0.2s ease; user-select: none;
+  }
+  .stepper .step.active { color: var(--im-blue-green); border-bottom-color: var(--im-blue-green); font-weight: 700; }
+  .stepper .step.done { color: var(--im-ash); }
+
+  main.layout { flex: 1; display: flex; min-height: 0; }
+  @media (max-width: 880px) { main.layout { flex-direction: column; } }
+
+  .visual-panel {
+    flex: 1.5; background: var(--im-white); position: relative;
+    display: flex; flex-direction: column; min-height: 0;
+    border-right: 1px solid var(--im-blue-green-light);
+  }
+  @media (max-width: 880px) {
+    .visual-panel { flex: 1.1; border-right: none; border-bottom: 1px solid var(--im-blue-green-light); min-height: 46vh; }
+  }
+  .visual-stage { flex: 1; position: relative; overflow: hidden; }
+  .stage-svg { width: 100%; height: 100%; display: block; }
+  .fadein { animation: fadein 0.35s ease; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+  .stage-plate {
+    position: absolute; top: 0.85rem; left: 1.4rem;
+    font-size: 0.7rem; color: var(--im-grey); letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .stage-plate b { color: var(--im-ash); }
+
+  .spec-strip { flex-shrink: 0; display: flex; flex-wrap: wrap; border-top: 1px solid var(--im-blue-green-light); background: var(--im-white); }
+  .spec-cell { flex: 1 1 0; min-width: 108px; padding: 0.55rem 0.9rem 0.6rem; border-left: 1px solid var(--im-blue-green-near-white); }
+  .spec-cell:first-child { border-left: none; }
+  .spec-cell .k { font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--im-grey); margin-bottom: 0.22rem; }
+  .spec-cell .v { font-size: 0.74rem; font-weight: 700; color: var(--im-black); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .spec-cell .v.dim { color: var(--im-grey); font-weight: 400; }
+
+  .config-panel { flex: 1; background: var(--im-egg); display: flex; flex-direction: column; min-height: 0; }
+  .config-body { flex: 1; overflow-y: auto; padding: 1.3rem 1.5rem 1rem; }
+  .config-panel h2 { font-family: var(--font-display); font-weight: normal; font-size: 1.5rem; margin: 0 0 0.25rem; color: var(--im-black); }
+  .config-panel h2 em { color: var(--im-blue-green); font-style: italic; }
+  .config-panel .sub { font-size: 0.84rem; color: var(--im-ash); margin: 0 0 0.7rem; line-height: 1.4; }
+
+  .explain {
+    background: var(--im-blue-green-near-white);
+    border-left: 3px solid var(--im-blue-green);
+    padding: 0.55rem 0.8rem;
+    font-size: 0.72rem; line-height: 1.45; color: var(--im-ash);
+    margin: 0 0 1rem; border-radius: 2px;
+  }
+  .explain b { color: var(--im-black); }
+
+  /* ---------- Contacts ---------- */
+  .contacts {
+    margin-top: 1rem; padding-top: 0.9rem;
+    border-top: 1px solid var(--im-blue-green-near-white);
+  }
+  .contacts .c-title { font-size: 0.68rem; color: var(--im-grey); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.45rem; }
+  .c-person { margin-top: 0.4rem; }
+  .c-name { font-size: 0.78rem; font-weight: 700; color: var(--im-black); line-height: 1.25; }
+  .c-mail { font-size: 0.72rem; color: var(--im-blue-green); line-height: 1.3; }
+
+  /* ---------- Staff panel ---------- */
+  .staff {
+    position: absolute; inset: 0; z-index: 60;
+    background: rgba(31,31,35,0.55);
+    display: none; align-items: center; justify-content: center;
+  }
+  .staff.open { display: flex; }
+  .staff .panel {
+    background: var(--im-white); border-radius: 2px;
+    padding: 1.4rem; width: min(320px, 86vw);
+  }
+  .staff .panel h3 { font-family: var(--font-display); font-weight: normal; margin: 0 0 0.3rem; font-size: 1.2rem; }
+  .staff .panel p { font-size: 0.75rem; color: var(--im-ash); margin: 0 0 1rem; }
+  .staff .panel .btn { width: 100%; margin-bottom: 0.5rem; }
+
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
+  @media (max-width: 500px) { .proj-grid { grid-template-columns: 1fr; } }
+  .proj {
+    background: var(--im-white); border: 1px solid var(--im-blue-green-light); border-radius: 2px;
+    padding: 0.7rem 0.85rem; text-align: left; transition: all 0.18s ease; user-select: none;
+  }
+  .proj .name { font-weight: 700; font-size: 0.85rem; color: var(--im-black); display: block; }
+  .proj .desc { font-size: 0.7rem; line-height: 1.3; color: var(--im-ash); display: block; margin-top: 0.15rem; }
+  .proj .body-tag { font-size: 0.62rem; color: var(--im-grey); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-top: 0.35rem; }
+  .proj.selected { background: var(--im-blue-green); border-color: var(--im-blue-green); }
+  .proj.selected .name, .proj.selected .desc { color: var(--im-white); }
+  .proj.selected .body-tag { color: var(--im-green-grey-30); }
+  .proj:active { transform: scale(0.97); }
+
+  .band-block { margin-bottom: 1.1rem; }
+  .band-head {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    padding-bottom: 0.3rem; margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--im-blue-green-light);
+  }
+  .band-head .b-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--im-blue-green);
+  }
+  .band-head .b-note { font-size: 0.66rem; color: var(--im-grey); line-height: 1.35; }
+  .tile .sug {
+    font-size: 0.55rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--im-blue-green); border: 1px dashed var(--im-blue-green-30);
+    padding: 0.06rem 0.3rem; border-radius: 2px;
+  }
+  .group-block { margin-bottom: 1.1rem; }
+  .group-head {
+    display: flex; align-items: baseline; gap: 0.5rem;
+    padding-bottom: 0.3rem; margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--im-blue-green-light);
+  }
+  .group-head .g-label {
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--im-blue-green);
+  }
+  .group-head .g-note { font-size: 0.66rem; color: var(--im-grey); line-height: 1.35; }
+
+  .tile-grid { display: grid; grid-template-columns: 1fr; gap: 0.45rem; }
+  .tile {
+    position: relative;
+    background: var(--im-white); border: 1px solid var(--im-blue-green-light); border-radius: 2px;
+    padding: 0.6rem 2.3rem 0.6rem 0.75rem;
+    text-align: left; transition: background 0.18s ease, border-color 0.18s ease; user-select: none;
+    width: 100%;
+  }
+  .tile .row1 { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.15rem; flex-wrap: wrap; }
+  .tile .dot { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; border: 1px solid rgba(31,31,35,0.25); }
+  .tile .pname { font-weight: 700; font-size: 0.8rem; color: var(--im-black); line-height: 1.25; }
+  .tile .acr {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em;
+    color: var(--im-blue-green); background: var(--im-blue-green-near-white);
+    border: 1px solid var(--im-blue-green-light);
+    padding: 0.08rem 0.32rem; border-radius: 2px; white-space: nowrap;
+  }
+  .tile .ord {
+    font-size: 0.58rem; font-weight: 700;
+    background: var(--im-blue-green); color: var(--im-white);
+    padding: 0.08rem 0.34rem; border-radius: 2px;
+  }
+  .tile .desc { font-size: 0.7rem; line-height: 1.4; color: var(--im-ash); display: block; }
+  .tile .info-btn {
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--im-blue-green-30);
+    background: var(--im-white); color: var(--im-blue-green);
+    font-size: 0.7rem; font-weight: 700; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0;
+  }
+  .tile .info-panel {
+    font-size: 0.68rem; line-height: 1.5; color: var(--im-ash);
+    margin-top: 0.5rem; padding-top: 0.5rem;
+    border-top: 1px solid var(--im-blue-green-near-white);
+  }
+  .tile.selected { background: var(--im-blue-green); border-color: var(--im-blue-green); }
+  .tile.selected .pname, .tile.selected .desc { color: var(--im-white); }
+  .tile.selected .acr { color: var(--im-white); background: transparent; border-color: rgba(255,255,255,0.5); }
+  .tile.selected .ord { background: var(--im-white); color: var(--im-blue-green); }
+  .tile.selected .info-btn { background: transparent; color: var(--im-white); border-color: rgba(255,255,255,0.6); }
+  .tile.selected .info-panel { color: var(--im-white); border-top-color: rgba(255,255,255,0.3); }
+  .tile.disabled { opacity: 0.45; }
+
+  .paint-legend {
+    display: flex; gap: 0.5rem 0.85rem; flex-wrap: wrap;
+    font-size: 0.62rem; color: var(--im-grey);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin: 0 0 0.9rem;
+  }
+  .paint-legend span b { color: var(--im-ash); }
+
+  .engine-summary {
+    background: var(--im-white); border: 1px solid var(--im-blue-green-light); border-radius: 2px;
+    padding: 0.8rem 1.05rem;
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 0.85rem; position: sticky; top: 0; z-index: 2;
+  }
+  .engine-summary .out { font-family: var(--font-display); font-size: 1.85rem; color: var(--im-blue-green); line-height: 1; }
+  .engine-summary .out small { font-family: var(--font-body); font-size: 0.68rem; color: var(--im-ash); text-transform: uppercase; letter-spacing: 0.08em; margin-left: 0.3rem; }
+  .engine-summary .cfg { font-size: 0.76rem; color: var(--im-ash); text-align: right; line-height: 1.35; }
+  .engine-summary .cfg b { color: var(--im-black); }
+
+  .role-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .role-row {
+    background: var(--im-white); border: 1px solid var(--im-blue-green-light); border-radius: 2px;
+    padding: 0.6rem 0.85rem; display: flex; align-items: center; gap: 0.7rem; transition: all 0.18s ease;
+  }
+  .role-row.active { border-color: var(--im-blue-green); }
+  .role-row .info { flex: 1; min-width: 0; }
+  .role-row .info .name { font-weight: 700; font-size: 0.86rem; color: var(--im-black); }
+  .role-row .info .meta { font-size: 0.68rem; color: var(--im-ash); margin-top: 0.1rem; line-height: 1.3; }
+  .role-row .hp-each { font-family: var(--font-display); font-size: 0.95rem; color: var(--im-grey); flex-shrink: 0; width: 3.4rem; text-align: right; }
+  .role-row.active .hp-each { color: var(--im-blue-green); }
+  .step-ctrl { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+  .step-ctrl button {
+    width: 34px; height: 34px; border-radius: 2px;
+    border: 1px solid var(--im-blue-green); background: transparent; color: var(--im-blue-green);
+    font-size: 1.1rem; font-weight: 700; line-height: 1; transition: all 0.15s ease;
+  }
+  .step-ctrl button:disabled { opacity: 0.25; }
+  .step-ctrl button:active:not(:disabled) { background: var(--im-blue-green); color: white; transform: scale(0.95); }
+  .step-ctrl .cnt { width: 1.4rem; text-align: center; font-weight: 700; font-size: 0.95rem; color: var(--im-black); }
+
+  .pkg-list { display: flex; flex-direction: column; gap: 0.55rem; }
+  .pkg-card {
+    position: relative;
+    background: var(--im-white); border: 1px solid var(--im-blue-green-light); border-radius: 2px;
+    padding: 0.8rem 1rem; display: flex; align-items: flex-start; gap: 0.75rem; transition: all 0.18s ease;
+    text-align: left;
+  }
+  .pkg-card .txt { flex: 1; min-width: 0; }
+  .pkg-card .txt .name { padding-right: 7rem; }
+  .mfk {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--im-blue-green);
+    border: 1px solid #56706E;
+    color: #FFFFFF;
+    font-size: 0.55rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 0.2rem 0.5rem; border-radius: 2px;
+  }
+  .pkg-card .chk {
+    width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
+    border: 1.5px solid var(--im-grey); border-radius: 2px;
+    display: flex; align-items: center; justify-content: center; transition: all 0.18s ease;
+  }
+  .pkg-card.selected { border-color: var(--im-blue-green); }
+  .pkg-card.selected .chk { background: var(--im-blue-green); border-color: var(--im-blue-green); }
+  .pkg-card.selected .chk::after {
+    content: ''; width: 8px; height: 5px;
+    border-left: 2px solid white; border-bottom: 2px solid white;
+    transform: rotate(-45deg) translate(1px,-1px);
+  }
+  .pkg-card .txt .name { font-weight: 700; font-size: 0.88rem; color: var(--im-black); }
+  .pkg-card .txt .desc { font-size: 0.73rem; color: var(--im-ash); margin-top: 0.15rem; line-height: 1.35; }
+  .pkg-card .txt .fit { font-size: 0.63rem; color: var(--im-grey); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ---------- Window sticker ---------- */
+  .sticker {
+    background: var(--im-white);
+    border: 2px solid var(--im-black);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .st-head { background: var(--im-black); color: var(--im-white); padding: 0.85rem 1rem 0.95rem; }
+  .st-brand { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--im-green-grey); margin-bottom: 0.4rem; }
+  .st-brand span { color: var(--im-white); }
+  .st-model { font-family: var(--font-display); font-size: 1.5rem; line-height: 1.15; }
+  .st-model em { font-style: italic; color: var(--im-green-grey); }
+  .st-sub { font-size: 0.7rem; color: var(--im-grey); margin-top: 0.25rem; }
+
+  .st-sec { padding: 0.7rem 1rem; border-bottom: 1px solid var(--im-blue-green-light); }
+  .st-sec-t {
+    font-size: 0.56rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--im-blue-green); font-weight: 700; margin-bottom: 0.45rem;
+  }
+  .st-line {
+    display: flex; align-items: baseline; gap: 0.4rem;
+    font-size: 0.76rem; padding: 0.16rem 0; color: var(--im-black);
+  }
+  .st-line .k { color: var(--im-ash); white-space: nowrap; display: flex; align-items: center; gap: 0.35rem; }
+  .st-line .d { flex: 1; border-bottom: 1px dotted var(--im-blue-green-30); transform: translateY(-3px); min-width: 1rem; }
+  .st-line .v { font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .st-line .sw { width: 10px; height: 10px; border-radius: 2px; border: 1px solid rgba(31,31,35,0.3); display: inline-block; }
+  .st-mfk {
+    font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase;
+    background: var(--im-blue-green); color: #fff; padding: 0.05rem 0.3rem; border-radius: 2px; margin-left: 0.3rem;
+  }
+  .st-note { background: var(--im-blue-green-near-white); }
+  .st-narrative { font-size: 0.75rem; line-height: 1.55; color: var(--im-ash); }
+
+  .st-foot {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+    padding: 0.85rem 1rem; border-top: 2px solid var(--im-black);
+  }
+  .st-foot-t { font-family: var(--font-display); font-size: 0.98rem; color: var(--im-black); margin-bottom: 0.15rem; }
+  .st-foot-p { font-size: 0.68rem; color: var(--im-ash); line-height: 1.4; margin-bottom: 0.5rem; }
+  .st-foot-r { text-align: center; flex-shrink: 0; }
+  .st-print { width: 100%; margin-top: 0.8rem; }
+  #qrcode { padding: 5px; background: white; border: 1px solid var(--im-blue-green-near-white); }
+  .qr-hint { font-size: 0.58rem; color: var(--im-grey); max-width: 7rem; line-height: 1.3; margin-top: 0.3rem; }
+
+  .config-footer {
+    flex-shrink: 0; display: flex; justify-content: space-between; gap: 0.75rem;
+    padding: 0.85rem 1.5rem; border-top: 1px solid var(--im-blue-green-light); background: var(--im-white);
+  }
+  .btn {
+    font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0.72rem 1.35rem; border-radius: 2px; border: none; transition: all 0.15s ease;
+  }
+  .btn-primary { background: var(--im-blue-green); color: white; }
+  .btn-primary:disabled { background: var(--im-blue-green-30); cursor: not-allowed; }
+  .btn-secondary { background: transparent; color: var(--im-blue-green); border: 1px solid var(--im-blue-green); }
+  .btn-ghost { background: transparent; color: var(--im-grey); border: 1px dashed var(--im-blue-green-30); }
+  .btn-ghost:active { color: var(--im-blue-green); border-color: var(--im-blue-green); }
+  .btn-secondary:disabled { opacity: 0.3; cursor: not-allowed; }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+
+  .build-rail {
+    flex-shrink: 0; display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.45rem 1.25rem; background: var(--im-ash); overflow-x: auto; min-height: 2.3rem;
+  }
+  .build-rail .rail-label { font-size: 0.66rem; color: var(--im-grey); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+  .rail-chip { background: var(--im-blue-green); color: white; font-size: 0.66rem; font-weight: 700; padding: 0.22rem 0.55rem; border-radius: 2px; white-space: nowrap; flex-shrink: 0; }
+  .rail-chip.dim { background: transparent; border: 1px solid var(--im-blue-green-60); color: var(--im-green-grey); }
+  .rail-empty { color: var(--im-grey); font-size: 0.7rem; font-style: italic; }
+
+  .attract {
+    position: absolute; inset: 0; background: var(--im-black);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 50; transition: opacity 0.4s ease;
+  }
+  .attract.hidden { opacity: 0; pointer-events: none; }
+  .attract .a-logo { color: white; font-size: 1.05rem; letter-spacing: 0.05em; margin-bottom: 2rem; opacity: 0.85; text-align: center; padding: 0 1rem; }
+  .attract .a-logo span { color: var(--im-green-grey); }
+  .attract h1 { font-family: var(--font-display); font-weight: normal; color: white; font-size: 2.5rem; margin: 0 0 0.5rem; text-align: center; padding: 0 1.5rem; }
+  .attract h1 em { color: var(--im-green-grey); font-style: italic; }
+  .attract .a-vibe {
+    margin-top: 0.9rem; font-size: 0.72rem; color: var(--im-grey);
+    letter-spacing: 0.06em; font-style: italic;
+  }
+  .attract .tap { margin-top: 2.5rem; font-size: 0.8rem; color: var(--im-green-grey); text-transform: uppercase; letter-spacing: 0.1em; animation: pulse 1.8s infinite ease-in-out; }
+  @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+  #printArea { display: none; }
+  @page { size: A4; margin: 10mm; }
+  @media print {
+    .app, .attract, .staff { display: none !important; }
+    html, body { overflow: visible; background: white; }
+    #printArea { display: block; font-family: Arial, Helvetica, sans-serif; color: #1F1F23; padding: 0; page-break-inside: avoid; }
+    #printArea .p-logo { font-weight: 700; letter-spacing: 0.03em; margin-bottom: 0.7rem; font-size: 0.8rem; }
+    #printArea h1 { font-family: 'Palatino Linotype', Palatino, Georgia, serif; font-weight: normal; font-size: 1.5rem; margin: 0 0 0.2rem; }
+    #printArea .p-tag { font-size: 0.68rem; color: #A8A5A1; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.7rem; }
+    #printArea .p-car { max-width: 60%; margin: 0 auto 0.5rem; }
+    #printArea .p-carsvg { width: 100%; height: auto; display: block; }
+    #printArea .p-narrative { font-size: 0.76rem; line-height: 1.5; color: #30373B; border-left: 3px solid #67817F; padding-left: 0.8rem; margin-bottom: 0.8rem; }
+    #printArea .p-row { display: flex; padding: 0.4rem 0; border-top: 1px solid #E1E6E5; font-size: 0.8rem; }
+    #printArea .p-row .l { width: 7.5rem; color: #A8A5A1; flex-shrink: 0; }
+    #printArea .p-row .v { font-weight: 700; line-height: 1.4; }
+    #printArea .p-row .v .s { font-weight: 400; color: #30373B; font-size: 0.72rem; }
+    #printArea .p-bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; margin-top: 0.8rem; }
+    #printArea .p-contacts { font-size: 0.78rem; }
+    #printArea .p-contacts .t { font-size: 0.62rem; color: #A8A5A1; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+    #printArea .p-contacts .r { font-weight: 700; padding: 0.08rem 0; }
+    #printArea .p-contacts .r span { font-weight: 400; color: #67817F; }
+    #printArea .p-foot { margin-top: 0.7rem; font-size: 0.62rem; color: #A8A5A1; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header class="top">
+    <div class="logo" id="logoTap">IM<span>_</span></div>
+    <div class="headline">Build your <em>Implement</em> project</div>
+    <div style="width:40px;"></div>
+  </header>
+
+  <div class="stepper" id="stepper"></div>
+
+  <main class="layout">
+    <section class="visual-panel">
+      <div class="stage-plate" id="stagePlate"></div>
+      <div class="visual-stage" id="stage"></div>
+      <div class="spec-strip" id="specStrip"></div>
+    </section>
+
+    <section class="config-panel">
+      <div class="config-body" id="configBody"></div>
+      <div class="config-footer">
+        <button class="btn btn-secondary" id="backBtn">Back</button>
+        <button class="btn btn-ghost" id="surpriseBtn">Surprise me</button>
+        <button class="btn btn-primary" id="nextBtn">Next</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="build-rail" id="buildRail"></div>
+
+  <div class="attract" id="attract">
+    <div class="a-logo">IMPLEMENT CONSULTING GROUP<span>_</span></div>
+    <h1>Build your <em>Implement</em> project.</h1>
+    <div class="a-vibe">Vibe-coded in 2 hours</div>
+    <div class="tap">Press to start</div>
+  </div>
+
+  <div class="staff" id="staffPanel">
+    <div class="panel">
+      <h3>Booth staff</h3>
+      <p>Kiosk controls.</p>
+      <button class="btn btn-secondary" id="staffReset">Reset kiosk</button>
+      <button class="btn btn-secondary" id="staffClose">Close</button>
+    </div>
+  </div>
+
+</div>
+
+<div id="printArea"></div>
+
+<script>
+/* ================= DATA ================= */
+
+const PROJECTS = [
+  { id:'strategy',  name:'Set a new direction',     model:'Grand Tourer',        desc:'Decide where the business should go over the next few years.',
+    suggest:['Strategy','Commercial','Finance'] },
+  { id:'growth',    name:'Grow the top line',       model:'Roadster',            desc:'Win more customers, sell more, price better.',
+    suggest:['Commercial','Strategy','People'] },
+  { id:'gtm',       name:'Launch something new',    model:'Supercar',            desc:'Bring a new product, service or market to life.',
+    suggest:['Commercial','Projects','Digital'] },
+  { id:'opex',      name:'Run it better',           model:'Hot Hatch',           desc:'Get more out of the daily work, with less waste.',
+    suggest:['Operations','Projects','Finance'] },
+  { id:'supply',    name:'Deliver on time',         model:'Transporter',         desc:'Plan and supply so customers get what they ordered, when promised.',
+    suggest:['Operations','Resilience','Digital'] },
+  { id:'orgchange', name:'Rebuild how we work',     model:'SUV',                 desc:'Change the structure, roles and ways of working across the organisation.',
+    suggest:['Transformation','People','Communication','Leadership'] },
+  { id:'pmi',       name:'Bring two together',      model:'Stretched Executive', desc:'Merge two organisations into one after a deal.',
+    suggest:['Transformation','Finance','Communication','People'] },
+  { id:'digital',   name:'Put technology to work',  model:'Aero Sedan',          desc:'Make the business run on better technology and AI.',
+    suggest:['Digital','Transformation','People'] },
+  { id:'sustain',   name:'Cut the footprint',       model:'City EV',             desc:'Lower emissions and shift to cleaner energy.',
+    suggest:['Sustainability','Operations','Strategy'] },
+  { id:'leadership',name:'Grow our leaders',        model:'Executive Sedan',     desc:'Make managers and teams better at leading.',
+    suggest:['Leadership','People','Communication'] },
+];
+
+/* Body definitions.
+   pts = top profile (Catmull-Rom spline, front → rear).
+   Anchors (cowl/roof/deck/tail) drive glass, seams, bands and kit placement. */
+const GROUND = 392;
+const GEO = {
+  strategy: { /* Grand Tourer: long dash-to-axle, low fast roof, tapering fastback tail */
+    x0:100, x1:800, r:41, fw:268, rw:664, doors:1,
+    pts:[[118,292],[210,283],[300,275],[368,268],[436,224],[510,215],[584,222],[640,240],[688,258],[740,264],[784,270]],
+    cowlX:368, cowlY:268, roofX0:436, roofY:219, roofX1:584, deckX:688, deckY:258, tailY:270,
+  },
+  opex: { /* Hot Hatch: short nose, long roof, steep hatch */
+    x0:200, x1:696, r:38, fw:298, rw:602, doors:2,
+    pts:[[216,282],[256,272],[296,258],[348,208],[436,199],[524,204],[576,214],[620,232],[662,235],[680,236]],
+    cowlX:296, cowlY:258, roofX0:348, roofY:202, roofX1:524, deckX:620, deckY:232, tailY:236,
+  },
+  digital: { /* Aero Sedan: one continuous arc */
+    x0:108, x1:792, r:40, fw:258, rw:652, doors:2,
+    pts:[[126,298],[220,286],[324,268],[414,214],[492,205],[568,212],[622,228],[668,248],[724,258],[774,264]],
+    cowlX:324, cowlY:268, roofX0:414, roofY:209, roofX1:568, deckX:668, deckY:248, tailY:264,
+  },
+  orgchange: { /* SUV: upright windshield, long flat roof, boxy high tail */
+    x0:132, x1:772, r:46, fw:272, rw:638, doors:2, archR:55,
+    pts:[[150,252],[216,244],[280,236],[336,178],[470,172],[610,176],[644,200],[668,214],[716,218],[754,222]],
+    cowlX:280, cowlY:236, roofX0:336, roofY:175, roofX1:610, deckX:668, deckY:214, tailY:222,
+  },
+  supply: { /* Transporter: cab-forward, huge flat roof, vertical rear */
+    x0:140, x1:782, r:38, fw:262, rw:656, doors:2,
+    pts:[[156,252],[188,242],[218,232],[266,170],[480,164],[706,168],[742,172],[762,176]],
+    cowlX:218, cowlY:232, roofX0:266, roofY:166, roofX1:706, deckX:742, deckY:178, tailY:176,
+  },
+  growth: { /* Roadster: long bonnet, low screen, speedster hump */
+    x0:140, x1:764, r:39, fw:288, rw:640, doors:1, openTop:true,
+    pts:[[158,290],[250,278],[340,270],[418,264],[452,244],[470,240],[490,252],[524,244],[556,252],[600,258],[680,264],[748,270]],
+    cowlX:418, cowlY:264, roofX0:452, roofY:240, roofX1:524, deckX:600, deckY:258, tailY:270,
+  },
+  pmi: { /* Stretched Executive: very long roof, three doors */
+    x0:62, x1:848, r:39, fw:208, rw:716, doors:3,
+    pts:[[80,282],[160,270],[238,258],[308,206],[480,198],[666,204],[712,226],[748,246],[798,254],[832,260]],
+    cowlX:238, cowlY:258, roofX0:308, roofY:201, roofX1:666, deckX:748, deckY:246, tailY:260,
+  },
+  sustain: { /* City EV, R5-style: flat short bonnet, upright glasshouse, thick C-pillar, near-vertical hatch, chunky arches */
+    x0:246, x1:658, r:38, fw:320, rw:584, doors:2, archR:51, drl:'square',
+    pts:[[262,258],[298,252],[330,248],[368,196],[452,190],[536,196],[572,210],[596,228],[626,232],[640,236]],
+    cowlX:330, cowlY:248, roofX0:368, roofY:192, roofX1:536, deckX:596, deckY:228, tailY:236,
+  },
+  leadership: { /* Executive Sedan: classic three-box */
+    x0:112, x1:788, r:40, fw:254, rw:648, doors:2,
+    pts:[[130,280],[212,270],[298,258],[378,200],[470,192],[564,198],[612,218],[656,242],[716,248],[768,252]],
+    cowlX:298, cowlY:258, roofX0:378, roofY:195, roofX1:564, deckX:656, deckY:242, tailY:252,
+  },
+  gtm: { /* Supercar: low nose, cab-forward teardrop, muscular rear haunch */
+    x0:92, x1:792, r:40, fw:246, rw:646, doors:1, archR:46,
+    pts:[[110,314],[170,306],[232,300],[284,294],[362,254],[418,247],[476,252],[524,266],[568,278],[640,272],[700,284],[762,292]],
+    cowlX:284, cowlY:294, roofX0:362, roofY:250, roofX1:476, deckX:568, deckY:278, tailY:292,
+  },
+};
+
+/* Expertise areas — mirrored from implementconsultinggroup.com/what-we-do */
+const PRACTICES = [
+  { id:'Transformation', band:'cross', name:'Transformation', color:'#67817F',
+    desc:'Changing how a whole organisation works, and making it stick.',
+    info:'Big change touches structure, systems and people all at once. We help plan it, run it and keep it going after the consultants leave — because transformation is never only structural, it is always human.' },
+  { id:'Strategy', band:'domain', name:'Strategy', color:'#451F23',
+    desc:'Deciding where the business should go next.',
+    info:'Which markets to be in, what to invest in, what to stop doing. Covers designing the strategy, executing it, strategic innovation, mergers and acquisitions, and the economics behind the choice.' },
+  { id:'Operations', band:'domain', name:'Operations', color:'#4E6360',
+    desc:'Making what you produce and deliver work better.',
+    info:'From factories and supply chains to planning and service delivery: where things get made, how they move, and how to meet demand without huge cost or huge stock.' },
+  { id:'Sustainability', band:'domain', name:'Sustainability', color:'#B9C7C2',
+    desc:'Cutting emissions and building a business that lasts.',
+    info:'Sustainable strategy, the energy transition, decarbonisation, circularity, sustainability reporting and greener supply chains — put at the core of the business rather than bolted on the side.' },
+  { id:'Digital', band:'domain', name:'Digital', color:'#A4B3B2',
+    desc:'Choosing and using technology that actually helps.',
+    info:'Digital and IT strategy, ERP transformation, cybersecurity, data, AI and analytics. Technology has gone from a nice-to-have to the thing the business runs on — we help make that shift work in practice.' },
+  { id:'Commercial', band:'domain', name:'Commercial', color:'#C89E8F',
+    desc:'Selling more, to the right customers, at the right price.',
+    info:'Pricing, sales setup, which customers to chase and which channels to use. The money coming in — and how to grow it without simply working harder.' },
+  { id:'Finance', band:'domain', name:'Finance', color:'#A8A5A1',
+    desc:'Getting a grip on the numbers behind decisions.',
+    info:'Budgeting, forecasting, cost and performance management, and giving finance teams the tools to be a partner in decisions rather than a reporting function.' },
+  { id:'Leadership', band:'domain', name:'Leadership', color:'#E4B73C',
+    desc:'Helping leaders get better at leading.',
+    info:'Assessment, coaching and development for individuals and leadership teams — understanding how you lead, where your energy goes, and how to take others through demanding change.' },
+  { id:'People', band:'domain', name:'People', color:'#E1C1B5',
+    desc:'The right people, in the right roles, growing.',
+    info:'Who the organisation needs, with which skills, and how to attract, keep and develop them. Also how work itself is organised so people can do their best.' },
+  { id:'Communication', band:'domain', name:'Communication', color:'#9A6E44',
+    desc:'Explaining change so people understand and believe it.',
+    info:'Change fails when nobody knows why it is happening. We help leaders say what is changing, what it means for each person, and what happens next — in language people trust.' },
+  { id:'Projects', band:'cross', name:'Projects', color:'#6E4A2F',
+    desc:'Running big projects so they finish, on time.',
+    info:'Programme and project management for the complicated ones: how to prioritise, govern, track and actually land large initiatives instead of watching them drift.' },
+  { id:'Resilience', band:'cross', name:'Resilience', color:'#30373B',
+    desc:'Preparing for shocks you cannot predict.',
+    info:'Supply disruptions, cyber threats, energy prices, geopolitics. We help organisations build the ability to absorb surprises and keep running when conditions change fast.' },
+];
+
+const BANDS = [
+  { id:'domain', label:'Subject expertise', note:'Specialists in one part of the business.' },
+  { id:'cross',  label:'Across the whole job', note:'Expertise that runs through every kind of project.' },
+];
+const PCOLOR = Object.fromEntries(PRACTICES.map(p => [p.id, p.color]));
+const MAX_PAINT = 10;
+const SLOT_NAMES = ['Body','Roof','Belt stripe','Rocker','Accents','Nose','Tail','Pinstripe','Sill stripe','Kit'];
+
+const ROLES = [
+  { id:'sp', name:'Senior Partner',    hp:150, meta:'Sets the direction. Opens the doors.' },
+  { id:'p',  name:'Partner',           hp:120, meta:'Owns the outcome, end to end.' },
+  { id:'pm', name:'Project Manager',   hp:90,  meta:'Keeps every workstream on the road.' },
+  { id:'sc', name:'Senior Consultant', hp:70,  meta:'Deep expertise, deployed where it matters.' },
+  { id:'c',  name:'Consultant',        hp:50,  meta:'Analysis, delivery and drive.' },
+  { id:'jc', name:'Junior Consultant', hp:30,  meta:'High-revving. Torque from day one.' },
+];
+const MAX_PER_ROLE = 9;
+const MAX_TOTAL = 12;
+
+const PACKAGES = [
+  { id:'workshop', name:'Workshop Package',              tag:'WS', desc:'A series of workshops where we work out the answer together with your team, instead of handing over a report.', fit:'Fits: roof box', mfk:true },
+  { id:'keynote',  name:'Expert Interviews',             tag:'EI', desc:'We interview experts and executives inside and outside your company, then feed what we learn into the work.', fit:'Fits: front splitter + rear diffuser' },
+  { id:'deepdive', name:'Tech Collective AI Deployment', tag:'AI', desc:'Our tech company, The Tech Collective, builds and sets up AI tools in your business.', fit:'Fits: side skirts', mfk:true },
+  { id:'sprint',   name:'Advisory Sprint Package',       tag:'AS', desc:'A few weeks of senior advice when a decision needs to be made quickly.', fit:'Fits: rear spoiler' },
+];
+
+const STEPS = ['project','paint','powertrain','packages','summary'];
+const STEP_LABELS = { project:'1. Ambition', paint:'2. Paint job', powertrain:'3. Powertrain', packages:'4. Packages', summary:'5. Your Build' };
+
+/* ================= STATE ================= */
+function freshState() {
+  return { stepIndex: 0, project: null, practices: new Set(), engine: {}, packages: new Set() };
+}
+let state = freshState();
+let openInfo = new Set();   // practice tiles with their "?" explanation expanded
+let idleTimer = null;
+const IDLE_MS = 120000;
+
+/* ================= DERIVED ================= */
+function totalPeople() { return Object.values(state.engine).reduce((a,b)=>a+b, 0); }
+function totalHp() { return ROLES.reduce((s,r)=> s + (state.engine[r.id]||0)*r.hp, 0); }
+function kW() { return Math.round(totalHp() * 0.7457); }
+function motorLabel(n) {
+  if (n <= 0) return '—';
+  if (n === 1) return 'Single-Motor';
+  if (n === 2) return 'Dual-Motor';
+  if (n === 3) return 'Tri-Motor';
+  return 'Quad-Motor';
+}
+function tierName(n) {
+  if (n <= 0) return '';
+  if (n === 1) return 'Solo Advisor';
+  if (n <= 3) return 'Core Team';
+  if (n <= 6) return 'Extended Team';
+  return 'Full Taskforce';
+}
+function engineCompositionText() {
+  return ROLES.filter(r => (state.engine[r.id]||0) > 0)
+    .map(r => state.engine[r.id] + '× ' + r.name).join(', ');
+}
+function currentProject() { return PROJECTS.find(p => p.id === state.project) || null; }
+
+/* ================= COLOUR UTILS ================= */
+function hex2rgb(h) { h = h.replace('#',''); return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)]; }
+function rgb2hex(r,g,b) { return '#' + [r,g,b].map(v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0')).join(''); }
+function mix(a, b, t) { const A = hex2rgb(a), B = hex2rgb(b); return rgb2hex(A[0]+(B[0]-A[0])*t, A[1]+(B[1]-A[1])*t, A[2]+(B[2]-A[2])*t); }
+function darken(h, f) { return mix(h, '#000000', f); }
+function lighten(h, f) { return mix(h, '#ffffff', f); }
+function lum(h) { const [r,g,b] = hex2rgb(h); return (0.299*r + 0.587*g + 0.114*b) / 255; }
+
+/* 10 paint slots in selection order */
+function paint() {
+  const cols = [...state.practices].map(id => PCOLOR[id]);
+  return {
+    n: cols.length,
+    hasPaint: cols.length > 0,
+    body:    cols[0] || null,
+    roof:    cols[1] || null,
+    stripe:  cols[2] || null,
+    rocker:  cols[3] || null,
+    accent:  cols[4] || null,
+    nose:    cols[5] || null,
+    tail:    cols[6] || null,
+    pin:     cols[7] || null,
+    sillpin: cols[8] || null,
+    kit:     cols[9] || null,
+  };
+}
+
+/* ================= STEPPER ================= */
+function renderStepper() {
+  const el = document.getElementById('stepper');
+  el.innerHTML = STEPS.map((s, i) => {
+    let cls = 'step';
+    if (i === state.stepIndex) cls += ' active';
+    else if (i < state.stepIndex) cls += ' done';
+    return `<div class="${cls}" data-step="${i}">${STEP_LABELS[s]}</div>`;
+  }).join('');
+  [...el.children].forEach(child => {
+    child.addEventListener('click', () => {
+      const idx = parseInt(child.dataset.step);
+      let ok = true;
+      for (let k = 0; k < idx; k++) if (!canProceedFrom(k)) ok = false;
+      if (idx <= state.stepIndex || ok) { state.stepIndex = idx; renderAll(); }
+    });
+  });
+}
+
+/* ================= CONFIG BODY ================= */
+function renderConfigBody() {
+  const step = STEPS[state.stepIndex];
+  const el = document.getElementById('configBody');
+
+  if (step === 'project') {
+    el.innerHTML = `
+      <h2>What do you want to <em>achieve</em>?</h2>
+      <p class="sub">Pick the ambition. It decides the shape of your car.</p>
+      <div class="explain"><b>What is this?</b> Implement is a consultancy — companies hire us to help them make a change. Start with what you want to achieve; you choose who comes along in the next step.</div>
+      <div class="proj-grid">
+        ${PROJECTS.map(p => `
+          <button class="proj ${state.project === p.id ? 'selected' : ''}" data-id="${p.id}">
+            <span class="name">${p.name}</span>
+            <span class="desc">${p.desc}</span>
+            <span class="body-tag">Body: ${p.model}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+    el.querySelectorAll('.proj').forEach(c => {
+      c.addEventListener('click', () => { state.project = c.dataset.id; renderAll(); });
+    });
+  }
+
+  if (step === 'paint') {
+    const arr = [...state.practices];
+    const full = arr.length >= MAX_PAINT;
+    const projNow = currentProject();
+    const suggested = projNow ? (projNow.suggest || []) : [];
+    el.innerHTML = `
+      <h2>Choose your <em>paint job</em></h2>
+      <p class="sub">Who comes along? Pick the expertise your ambition needs — each one adds a colour.</p>
+      <div class="explain"><b>How this works</b> Your first pick paints the body, the next ones add the roof, stripes and details. Tap <b>?</b> to read what any team actually does.</div>
+      ${BANDS.map(b => `
+        <div class="band-block">
+          <div class="band-head">
+            <span class="b-label">${b.label}</span>
+            <span class="b-note">${b.note}</span>
+          </div>
+          <div class="tile-grid">
+            ${PRACTICES.filter(p => p.band === b.id).map(p => {
+              const sel = state.practices.has(p.id);
+              const ord = sel ? arr.indexOf(p.id) + 1 : null;
+              const open = openInfo.has(p.id);
+              const sug = suggested.includes(p.id);
+              return `
+              <div class="tile ${sel ? 'selected' : ''} ${!sel && full ? 'disabled' : ''}" data-id="${p.id}" role="button">
+                <button class="info-btn" data-info="${p.id}" aria-label="More about ${p.name}">${open ? '×' : '?'}</button>
+                <span class="row1">
+                  <span class="dot" style="background:${p.color}"></span>
+                  <span class="pname">${p.name}</span>
+                  ${ord ? `<span class="ord">${ord}</span>` : ''}
+                  ${!sel && sug ? '<span class="sug">Often used here</span>' : ''}
+                </span>
+                <span class="desc">${p.desc}</span>
+                ${open ? `<div class="info-panel">${p.info}</div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    `;
+    el.querySelectorAll('.tile').forEach(t => {
+      t.addEventListener('click', () => {
+        const id = t.dataset.id;
+        if (state.practices.has(id)) state.practices.delete(id);
+        else if (state.practices.size < MAX_PAINT) state.practices.add(id);
+        else return;
+        renderAll();
+      });
+    });
+    el.querySelectorAll('.info-btn').forEach(b => {
+      b.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        const id = b.dataset.info;
+        if (openInfo.has(id)) openInfo.delete(id);
+        else openInfo.add(id);
+        renderAll();
+      });
+    });
+  }
+
+  if (step === 'powertrain') {
+    const people = totalPeople();
+    el.innerHTML = `
+      <h2>Build your <em>powertrain</em></h2>
+      <p class="sub">Fully electric, naturally. Compose your crew — every member adds output and a cooling fin.</p>
+      <div class="explain"><b>What's the crew?</b> The consultants on your project, from Junior Consultant to Senior Partner.</div>
+      <div class="engine-summary">
+        <div class="out">${totalHp()}<small>hp</small></div>
+        <div class="cfg">
+          <b>${motorLabel(people)}</b>${people ? ' · ' + kW() + ' kW · ' + people + (people===1?' person':' people') : ''}<br/>
+          ${tierName(people) || 'Add your first team member'}
+        </div>
+      </div>
+      <div class="role-list">
+        ${ROLES.map(r => {
+          const cnt = state.engine[r.id] || 0;
+          return `
+          <div class="role-row ${cnt ? 'active' : ''}">
+            <div class="info">
+              <div class="name">${r.name}</div>
+              <div class="meta">${r.meta}</div>
+            </div>
+            <div class="hp-each">${r.hp} hp</div>
+            <div class="step-ctrl">
+              <button data-role="${r.id}" data-d="-1" ${cnt<=0?'disabled':''}>−</button>
+              <span class="cnt">${cnt}</span>
+              <button data-role="${r.id}" data-d="1" ${cnt>=MAX_PER_ROLE || people>=MAX_TOTAL ?'disabled':''}>+</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    el.querySelectorAll('.step-ctrl button').forEach(b => {
+      b.addEventListener('click', () => {
+        const id = b.dataset.role, d = parseInt(b.dataset.d);
+        const cur = state.engine[id] || 0;
+        const next = cur + d;
+        if (next < 0 || next > MAX_PER_ROLE) return;
+        if (d > 0 && totalPeople() >= MAX_TOTAL) return;
+        if (next === 0) delete state.engine[id];
+        else state.engine[id] = next;
+        renderAll();
+      });
+    });
+  }
+
+  if (step === 'packages') {
+    el.innerHTML = `
+      <h2>Choose your <em>packages</em></h2>
+      <p class="sub">Stack as many add-ons as your build needs — each one bolts real kit onto the car.</p>
+      <div class="explain"><b>What's a package?</b> An extra way of working you can add on. The <b>Manufaktur</b>-badged ones are an Implement specialty: we build the answer together with you, so the advice can actually be put to use.</div>
+      <div class="pkg-list">
+        ${PACKAGES.map(p => `
+          <button class="pkg-card ${state.packages.has(p.id) ? 'selected' : ''}" data-id="${p.id}">
+            <div class="chk"></div>
+            <div class="txt">
+              <div class="name">${p.name}</div>
+              <div class="desc">${p.desc}</div>
+              <div class="fit">${p.fit}</div>
+              ${p.mfk ? '<span class="mfk">Implement Manufaktur_</span>' : ''}
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    `;
+    el.querySelectorAll('.pkg-card').forEach(c => {
+      c.addEventListener('click', () => {
+        const id = c.dataset.id;
+        if (state.packages.has(id)) state.packages.delete(id);
+        else state.packages.add(id);
+        renderAll();
+      });
+    });
+  }
+
+  if (step === 'summary') {
+    const people = totalPeople();
+    const proj = currentProject();
+    el.innerHTML = `
+      <h2>Your <em>window sticker</em></h2>
+      <p class="sub">Every car in a showroom has one. Here's yours.</p>
+      <div class="sticker">
+        <div class="st-head">
+          <div class="st-brand">IMPLEMENT MANUFAKTUR<span>_</span></div>
+          <div class="st-model">${getBuildName(false)}</div>
+          <div class="st-sub">${proj ? proj.name : ''}</div>
+        </div>
+
+        <div class="st-sec">
+          <div class="st-sec-t">Vehicle description</div>
+          <div class="st-line"><span class="k">Body style</span><span class="d"></span><span class="v">${proj ? proj.model : '—'}</span></div>
+          <div class="st-line"><span class="k">Powertrain</span><span class="d"></span><span class="v">${people ? motorLabel(people) + ' Electric' : '—'}</span></div>
+          <div class="st-line"><span class="k">Output</span><span class="d"></span><span class="v">${people ? totalHp() + ' hp (' + kW() + ' kW)' : '—'}</span></div>
+          <div class="st-line"><span class="k">0–100 km/h</span><span class="d"></span><span class="v">${people ? accelTime() + ' s' : '—'}</span></div>
+          <div class="st-line"><span class="k">Range</span><span class="d"></span><span class="v">${people ? rangeKm() + ' km' : '—'}</span></div>
+          <div class="st-line"><span class="k">Kerb weight</span><span class="d"></span><span class="v">${people ? kerbWeight() + ' kg' : '—'}</span></div>
+          <div class="st-line"><span class="k">Seats</span><span class="d"></span><span class="v">${people || '—'}</span></div>
+        </div>
+
+        <div class="st-sec">
+          <div class="st-sec-t">Paint &amp; finish</div>
+          ${state.practices.size
+            ? [...state.practices].map((id,i) => `<div class="st-line"><span class="k"><span class="sw" style="background:${PCOLOR[id]}"></span>${SLOT_NAMES[i] || 'Detail'}</span><span class="d"></span><span class="v">${id}</span></div>`).join('')
+            : '<div class="st-line"><span class="k">Unpainted</span><span class="d"></span><span class="v">—</span></div>'}
+        </div>
+
+        <div class="st-sec">
+          <div class="st-sec-t">Crew on board</div>
+          ${people
+            ? ROLES.filter(r => (state.engine[r.id]||0) > 0).map(r => `<div class="st-line"><span class="k">${r.name}</span><span class="d"></span><span class="v">${state.engine[r.id]} × ${r.hp} hp</span></div>`).join('')
+            : '<div class="st-line"><span class="k">No crew</span><span class="d"></span><span class="v">—</span></div>'}
+        </div>
+
+        <div class="st-sec">
+          <div class="st-sec-t">Optional equipment</div>
+          ${state.packages.size
+            ? [...state.packages].map(id => { const p = PACKAGES.find(x=>x.id===id); return `<div class="st-line"><span class="k">${p.name}${p.mfk ? ' <span class="st-mfk">Manufaktur</span>' : ''}</span><span class="d"></span><span class="v">${p.fit.replace('Fits: ','')}</span></div>`; }).join('')
+            : '<div class="st-line"><span class="k">None selected</span><span class="d"></span><span class="v">—</span></div>'}
+        </div>
+
+        <div class="st-sec st-note">
+          <div class="st-sec-t">What this build is good at</div>
+          <div class="st-narrative">${buildNarrative()}</div>
+        </div>
+
+        <div class="st-foot">
+          <div class="st-foot-l">
+            <div class="st-foot-t">Come say hello at the stand</div>
+            <div class="st-foot-p">We'd love to hear what you built — and talk about the real thing.</div>
+            <div class="c-person"><div class="c-name">Henning Verner</div><div class="c-mail">heve@implement.se</div></div>
+            <div class="c-person"><div class="c-name">Fraser Hall</div><div class="c-mail">frha@implement.dk</div></div>
+          </div>
+          <div class="st-foot-r">
+            <div id="qrcode"></div>
+            <div class="qr-hint">More at implementconsultinggroup.com</div>
+          </div>
+        </div>
+      </div>
+    `;
+    const qrEl = document.getElementById('qrcode');
+    if (qrEl && window.QRCode) {
+      qrEl.innerHTML = '';
+      try {
+        new QRCode(qrEl, { text: 'https://implementconsultinggroup.com/what-we-do', width: 96, height: 96, colorDark: '#1F1F23', colorLight: '#ffffff' });
+      } catch (e) { qrEl.style.display = 'none'; }
+    }
+    // Keep a tidy print stylesheet available if anyone prints from the browser,
+    // but never prompt for it.
+    buildPrintArea();
+  }
+}
+
+/* ================= PLAYFUL SPEC FIGURES ================= */
+function accelTime() {
+  const hp = totalHp(), w = kerbWeight();
+  if (!hp) return '—';
+  return Math.max(2.1, (w / hp) * 1.9).toFixed(1);
+}
+function kerbWeight() {
+  return 1200 + totalPeople() * 95 + state.practices.size * 18 + state.packages.size * 25;
+}
+function rangeKm() {
+  const base = 420 + state.practices.size * 12 - state.packages.size * 10;
+  return Math.round(Math.max(260, base + totalPeople() * 8) / 5) * 5;
+}
+
+/* ================= NARRATIVE ================= */
+const PROJ_LINE = {
+  strategy:  'A strategy project: setting direction and making the big choices.',
+  opex:      'An operational excellence project: more output, less waste.',
+  digital:   'A digital and AI transformation: technology built into the way the business works.',
+  orgchange: 'An organisational transformation: taking the whole organisation through change.',
+  supply:    'A supply chain and planning project: the right things in the right place, on time.',
+  growth:    'A commercial project: accelerating the top line.',
+  pmi:       'A post-merger integration: two companies, one way of working.',
+  sustain:   'A sustainability and energy project: lower footprint, longer range.',
+  leadership:'A leadership development project: stronger leaders, stronger organisation.',
+  gtm:       'A go-to-market launch: from decision to market, fast.',
+};
+
+/* What each practice adds to the build */
+const PRACTICE_GIVES = {
+  'Transformation':'change that actually sticks',
+  'Strategy':'a clear direction',
+  'Operations':'a smarter way of making and delivering',
+  'Sustainability':'a route to lower emissions',
+  'Digital':'technology people genuinely use',
+  'Commercial':'a clearer view of what to sell and to whom',
+  'Finance':'a firm grip on the numbers',
+  'Leadership':'better leaders',
+  'People':'the right people in the right roles',
+  'Communication':'people who understand why it is happening',
+  'Projects':'big initiatives that finish',
+  'Resilience':'the ability to absorb surprises',
+};
+
+/* What each package adds — kit on the car, capability on the project */
+const PKG_GIVES = {
+  workshop:'the roof box carries co-creation workshops, so the outcome is designed together with your team',
+  keynote: 'the splitter and diffuser are expert interviews — outside perspective that keeps the build stable at speed',
+  deepdive:'the side skirts are Tech Collective AI deployment — technology built low into the platform',
+  sprint:  'the rear spoiler is a senior advisory sprint — extra downforce when decisions come fast',
+};
+
+/* What the crew size means for the project */
+function tierGives(n) {
+  if (n === 1) return 'one senior pair of hands — light, fast and focused';
+  if (n <= 3) return 'focused power for one clear problem';
+  if (n <= 6) return 'bandwidth to run workstreams in parallel';
+  return 'firm-wide muscle for enterprise-wide change';
+}
+
+function buildNarrative() {
+  const proj = currentProject();
+  const people = totalPeople();
+  const hp = totalHp();
+  const n = state.practices.size;
+  const parts = [];
+
+  parts.push(proj ? PROJ_LINE[proj.id] : 'No project selected yet.');
+
+  if (people) {
+    const seniorHp = (state.engine.sp||0)*150 + (state.engine.p||0)*120;
+    const juniorHp = (state.engine.c||0)*50 + (state.engine.jc||0)*30;
+    const sShare = seniorHp / hp, jShare = juniorHp / hp;
+    let mixTxt;
+    if (sShare >= 0.5) mixTxt = 'senior-heavy, so most of the torque comes from experience';
+    else if (jShare >= 0.5) mixTxt = 'young and high-revving, with energy to spare';
+    else mixTxt = 'a balanced mix of experience and drive';
+    parts.push(`The engine is a crew of ${people} (${tierName(people)}) delivering ${hp} hp: ${tierGives(people)}. The mix is ${mixTxt}.`);
+  }
+
+  if (n) {
+    const bits = [...state.practices].map(id => `${id} adds ${PRACTICE_GIVES[id] || 'specialist capability'}`);
+    const last = bits.pop();
+    parts.push('Every colour on the body does a job: ' + (bits.length ? bits.join(', ') + ' and ' + last : last) + '.');
+  }
+
+  if (state.packages.size) {
+    const bits = [...state.packages].map(id => PKG_GIVES[id]);
+    const first = bits.shift();
+    parts.push('On the kit side, ' + first + (bits.length ? '; ' + bits.join('; ') : '') + '.');
+  }
+
+  return parts.join(' ');
+}
+
+/* ================= NAMES ================= */
+function getBuildName(plain) {
+  const proj = currentProject();
+  if (!proj) return 'Your Implement';
+  const hp = totalHp();
+  const core = proj.model + (hp ? ' ' + hp : '');
+  const pkgTag = state.packages.size ? [...state.packages].map(id => PACKAGES.find(p=>p.id===id).tag).join('/') : '';
+  if (plain) return 'The ' + core + (pkgTag ? ' — ' + pkgTag : '');
+  return `The <em>${core}</em>${pkgTag ? ' — ' + pkgTag : ''}`;
+}
+
+function buildSummaryText() {
+  const people = totalPeople();
+  const proj = currentProject();
+  return [
+    'IMPLEMENT BUILD',
+    getBuildName(true),
+    'Project: ' + (proj ? proj.name + ' (' + proj.model + ')' : '-'),
+    'Paint job: ' + (state.practices.size ? [...state.practices].join(', ') : '-'),
+    'Powertrain: ' + (people ? motorLabel(people) + ' Electric, ' + totalHp() + 'hp / ' + kW() + 'kW (' + engineCompositionText() + ')' : '-'),
+    'Packages: ' + (state.packages.size ? [...state.packages].map(id=>PACKAGES.find(p=>p.id===id).name).join(', ') : '-'),
+  ].join('\n');
+}
+
+/* ================= PRINT (prebuilt for instant printing) ================= */
+function buildPrintArea() {
+  const people = totalPeople();
+  const proj = currentProject();
+  const pa = document.getElementById('printArea');
+  let qrImg = '';
+  const canvas = document.querySelector('#qrcode canvas');
+  const img = document.querySelector('#qrcode img');
+  try {
+    const src = canvas ? canvas.toDataURL() : (img ? img.src : '');
+    if (src) qrImg = `<img src="${src}" width="88" height="88" alt="QR"/>`;
+  } catch (e) {}
+  // Car image (clone with unique clip id so it doesn't collide with the live stage)
+  const carSvg = renderCarSVG()
+    .split('bodyClip').join('bodyClipPrint')
+    .replace('class="stage-svg fadein"', 'class="p-carsvg"');
+  pa.innerHTML = `
+    <div class="p-logo">IMPLEMENT MANUFAKTUR_</div>
+    <h1>${getBuildName(true)}</h1>
+    <div class="p-tag">${proj ? proj.name + ' — ' + proj.model : ''} · built at Stora Mobilitetsdagen</div>
+    <div class="p-car">${carSvg}</div>
+    <div class="p-narrative">${buildNarrative()}</div>
+    <div class="p-row"><div class="l">Powertrain</div><div class="v">${people ? motorLabel(people) + ' Electric · ' + totalHp() + ' hp / ' + kW() + ' kW' : '—'}</div></div>
+    <div class="p-row"><div class="l">0–100 / range</div><div class="v">${people ? accelTime() + ' s · ' + rangeKm() + ' km · ' + kerbWeight() + ' kg' : '—'}</div></div>
+    <div class="p-row"><div class="l">Crew</div><div class="v">${people ? people + ' — ' + tierName(people) + '<br/><span class="s">' + engineCompositionText() + '</span>' : '—'}</div></div>
+    <div class="p-row"><div class="l">Paint &amp; finish</div><div class="v">${state.practices.size ? [...state.practices].join(' × ') : '—'}</div></div>
+    <div class="p-row"><div class="l">Optional equipment</div><div class="v">${state.packages.size ? [...state.packages].map(id => PACKAGES.find(p=>p.id===id).name).join(', ') : 'None'}</div></div>
+    <div class="p-bottom">
+      <div class="p-contacts">
+        <div class="t">Come say hello at the stand</div>
+        <div class="r">Henning Verner<br/><span>heve@implement.se</span></div>
+        <div class="r">Fraser Hall<br/><span>frha@implement.dk</span></div>
+      </div>
+      <div class="p-qr">${qrImg}</div>
+    </div>
+    <div class="p-foot">implementconsultinggroup.com — fit for humans, fit for the future.</div>
+  `;
+}
+
+/* ================= CAR RENDER ================= */
+/* Catmull-Rom spline through points → cubic Bezier path segment */
+function crSegments(pts) {
+  let d = '';
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(i-1, 0)];
+    const p1 = pts[i];
+    const p2 = pts[i+1];
+    const p3 = pts[Math.min(i+2, pts.length-1)];
+    const c1x = p1[0] + (p2[0]-p0[0])/6, c1y = p1[1] + (p2[1]-p0[1])/6;
+    const c2x = p2[0] - (p3[0]-p1[0])/6, c2y = p2[1] - (p3[1]-p1[1])/6;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+}
+
+function carOutlineD(g) {
+  const s = GROUND - g.r;
+  const aR = g.archR || g.r + 9;
+  const nose = g.pts[0];
+  const tail = g.pts[g.pts.length-1];
+  return `M ${g.x0+12} ${s}
+    C ${g.x0+2} ${s-2} ${g.x0} ${s-14} ${g.x0} ${nose[1]+34}
+    L ${g.x0-3} ${nose[1]+22}
+    Q ${g.x0-3} ${nose[1]+6} ${nose[0]} ${nose[1]}
+    ${crSegments(g.pts)}
+    Q ${g.x1} ${tail[1]+4} ${g.x1} ${tail[1]+18}
+    L ${g.x1} ${s-14}
+    Q ${g.x1} ${s} ${g.x1-14} ${s}
+    L ${g.rw+aR} ${s}
+    A ${aR} ${aR} 0 0 0 ${g.rw-aR} ${s}
+    L ${g.fw+aR} ${s}
+    A ${aR} ${aR} 0 0 0 ${g.fw-aR} ${s}
+    Z`;
+}
+
+function beltYat(g, x) {
+  const p1 = { x: g.cowlX+18, y: g.cowlY+10 };
+  const p4 = { x: g.deckX-10, y: g.deckY+6 };
+  const t = (x - p1.x) / (p4.x - p1.x);
+  return p1.y + (p4.y - p1.y) * Math.max(0, Math.min(1, t));
+}
+
+function drawWheel(wx, s, r, rimCol, calCol) {
+  let w = '';
+  w += `<circle cx="${wx}" cy="${s}" r="${r}" fill="#26262B" stroke="#141416" stroke-width="2.5"/>`;
+  w += `<circle cx="${wx}" cy="${s}" r="${r-4}" fill="none" stroke="#3A3A40" stroke-width="1"/>`;
+  const rr = r * 0.62;
+  w += `<circle cx="${wx}" cy="${s}" r="${rr}" fill="${rimCol}" stroke="#1F1F23" stroke-width="1.6"/>`;
+  const ca = -55 * Math.PI/180;
+  const cxp = wx + Math.cos(ca) * rr * 0.78, cyp = s + Math.sin(ca) * rr * 0.78;
+  w += `<circle cx="${cxp}" cy="${cyp}" r="${r*0.16}" fill="${calCol}" stroke="#1F1F23" stroke-width="1.2"/>`;
+  const spokeCol = darken(rimCol, 0.45);
+  for (let a = 0; a < 5; a++) {
+    const ang = (-90 + a * 72) * Math.PI / 180;
+    const x2 = wx + Math.cos(ang) * rr * 0.88;
+    const y2 = s + Math.sin(ang) * rr * 0.88;
+    w += `<line x1="${wx}" y1="${s}" x2="${x2}" y2="${y2}" stroke="${spokeCol}" stroke-width="4.5" stroke-linecap="round"/>`;
+  }
+  w += `<circle cx="${wx}" cy="${s}" r="${r*0.14}" fill="#1F1F23"/>`;
+  return w;
+}
+
+function renderCarSVG() {
+  const proj = currentProject();
+  const pt = paint();
+  const onSummary = STEPS[state.stepIndex] === 'summary';
+
+  if (!proj) {
+    const g = GEO.leadership;
+    const s0 = GROUND - g.r;
+    return `<svg class="stage-svg fadein" viewBox="0 0 900 470" preserveAspectRatio="xMidYMid meet">
+      <line x1="30" y1="${GROUND}" x2="870" y2="${GROUND}" stroke="#E1E6E5" stroke-width="1.5"/>
+      <path d="${carOutlineD(g)}" fill="none" stroke="#C2CDCC" stroke-width="2.5" stroke-dasharray="8 8" stroke-linejoin="round"/>
+      <circle cx="${g.fw}" cy="${s0}" r="${g.r}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
+      <circle cx="${g.rw}" cy="${s0}" r="${g.r}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
+      <text x="450" y="440" text-anchor="middle" font-family="Arial" font-size="13" fill="#A8A5A1">Choose a project to shape your car</text>
+    </svg>`;
+  }
+
+  const g = GEO[proj.id];
+  const s0 = GROUND - g.r;
+  const aR = g.archR || g.r + 9;
+  const nose = g.pts[0];
+  const noseY = nose[1];
+  const bodyFill = pt.hasPaint ? pt.body : '#F1F4F3';
+  const dark = lum(bodyFill) < 0.35;
+  const detail = dark ? '#F8F5E7' : '#1F1F23';
+  const kitFill = pt.kit || '#1F1F23';
+  const kitEdge = lum(kitFill) > 0.6 ? '#1F1F23' : (dark ? '#F8F5E7' : 'none');
+  const outlineD = carOutlineD(g);
+  const accentCol = pt.accent || (pt.hasPaint ? darken(pt.body, 0.3) : '#A8A5A1');
+  const rimCol = pt.accent || '#C9C7C4';
+  const beltMidY = (g.cowlY + g.deckY) / 2 + 24;
+
+  let s = `<svg class="stage-svg fadein" viewBox="0 0 900 470" preserveAspectRatio="xMidYMid meet">`;
+  s += `<defs><clipPath id="bodyClip"><path d="${outlineD}"/></clipPath></defs>`;
+
+  s += `<line x1="30" y1="${GROUND}" x2="870" y2="${GROUND}" stroke="#E1E6E5" stroke-width="1.5"/>`;
+  s += `<ellipse cx="${(g.x0+g.x1)/2}" cy="${GROUND+3}" rx="${(g.x1-g.x0)/2 + 8}" ry="7" fill="#F2F2F1"/>`;
+
+  if (state.packages.has('deepdive')) {
+    const sx0 = g.fw + aR + 2, sx1 = g.rw - aR - 2;
+    s += `<path d="M ${sx0-10} ${s0-4} L ${sx1+10} ${s0-4} L ${sx1+2} ${s0+12} L ${sx0-2} ${s0+12} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
+    s += `<line x1="${sx0+14}" y1="${s0+4}" x2="${sx1-14}" y2="${s0+4}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.2" opacity="0.45"/>`;
+  }
+
+  // body fill
+  s += `<path d="${outlineD}" fill="${bodyFill}"/>`;
+
+  // tailored livery — everything clipped to the body silhouette
+  s += `<g clip-path="url(#bodyClip)">`;
+  if (pt.nose) {
+    s += `<rect x="${g.x0-10}" y="0" width="${(g.cowlX-g.x0)*0.55 + 10}" height="470" fill="${pt.nose}"/>`;
+  }
+  if (pt.tail) {
+    const tx = g.deckX + (g.x1-g.deckX)*0.35;
+    s += `<rect x="${tx}" y="0" width="${g.x1-tx+20}" height="470" fill="${pt.tail}"/>`;
+  }
+  if (pt.rocker) {
+    s += `<rect x="${g.x0}" y="${s0-17}" width="${g.x1-g.x0}" height="17" fill="${pt.rocker}"/>`;
+  }
+  if (pt.roof) {
+    if (g.openTop) {
+      s += `<rect x="${g.roofX1-6}" y="0" width="${g.x1-g.roofX1+20}" height="${g.deckY+10}" fill="${pt.roof}"/>`;
+    } else {
+      s += `<rect x="${g.roofX0-70}" y="0" width="${g.roofX1-g.roofX0+140}" height="${g.roofY+13}" fill="${pt.roof}"/>`;
+    }
+  }
+  if (pt.stripe) {
+    s += `<path d="M ${g.x0-10} ${g.cowlY+40} Q ${g.cowlX} ${g.cowlY+22} ${(g.cowlX+g.deckX)/2} ${beltMidY} T ${g.x1+10} ${g.deckY+30}"
+      fill="none" stroke="${pt.stripe}" stroke-width="13"/>`;
+  }
+  if (pt.pin) {
+    s += `<path d="M ${g.x0-10} ${g.cowlY+54} Q ${g.cowlX} ${g.cowlY+36} ${(g.cowlX+g.deckX)/2} ${beltMidY+14} T ${g.x1+10} ${g.deckY+44}"
+      fill="none" stroke="${pt.pin}" stroke-width="4"/>`;
+  }
+  if (pt.sillpin) {
+    s += `<rect x="${g.x0}" y="${s0-22}" width="${g.x1-g.x0}" height="3.5" fill="${pt.sillpin}"/>`;
+  }
+  // EV lower intake
+  s += `<rect x="${g.x0+5}" y="${s0-24}" width="${Math.max(20, Math.min(48, g.fw-aR-10-(g.x0+5)))}" height="9" rx="4" fill="#1F1F23" opacity="0.82"/>`;
+  s += `</g>`;
+
+  // outline over livery
+  s += `<path d="${outlineD}" fill="none" stroke="#1F1F23" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // fender flares (chunkier on the City EV)
+  const flareW = proj.id === 'sustain' ? 4.5 : 3;
+  [g.fw, g.rw].forEach(wx => {
+    s += `<path d="M ${wx-aR-2} ${s0-3} A ${aR+3} ${aR+3} 0 0 1 ${wx+aR+2} ${s0-3}" fill="none" stroke="${darken(bodyFill,0.28)}" stroke-width="${flareW}" opacity="0.9"/>`;
+  });
+
+  // glass / greenhouse
+  if (g.openTop) {
+    s += `<line x1="${g.cowlX+14}" y1="${g.cowlY+8}" x2="${g.roofX0+10}" y2="${g.roofY+8}" stroke="#30373B" stroke-width="4" stroke-linecap="round"/>`;
+  } else {
+    const p1x = g.cowlX+18, p1y = g.cowlY+10;
+    const p4x = g.deckX-10, p4y = g.deckY+4;
+    s += `<path d="M ${p1x} ${p1y} L ${g.roofX0+12} ${g.roofY+9} L ${g.roofX1-6} ${g.roofY+9} L ${p4x} ${p4y} Z"
+      fill="#2A3136" stroke="#1F1F23" stroke-width="1.6"/>`;
+    s += `<line x1="${g.roofX0+26}" y1="${g.roofY+13}" x2="${p1x+22}" y2="${p1y-2}" stroke="#FFFFFF" stroke-width="2.5" opacity="0.22"/>`;
+    const bx = (g.roofX0 + g.roofX1) / 2;
+    s += `<line x1="${bx}" y1="${g.roofY+8}" x2="${bx+3}" y2="${beltYat(g,bx+3)+1}" stroke="${bodyFill}" stroke-width="7"/>`;
+    s += `<line x1="${bx}" y1="${g.roofY+8}" x2="${bx+3}" y2="${beltYat(g,bx+3)+1}" stroke="#1F1F23" stroke-width="1" opacity="0.4"/>`;
+  }
+
+  // door seams + flush handles
+  const seamX0 = g.cowlX + 28, seamX1 = g.deckX - 24;
+  for (let i = 1; i <= g.doors; i++) {
+    const x = seamX0 + (seamX1 - seamX0) * (i / (g.doors + (g.doors === 1 ? 1 : 0.35)));
+    const by = beltYat(g, x) + 4;
+    s += `<path d="M ${x} ${by} Q ${x+3} ${(by+s0)/2} ${x+1} ${s0-8}" fill="none" stroke="${detail}" stroke-width="1.3" opacity="0.7"/>`;
+    s += `<line x1="${x-28}" y1="${by+12}" x2="${x-10}" y2="${by+12}" stroke="${detail}" stroke-width="2.6" stroke-linecap="round" opacity="0.85"/>`;
+  }
+
+  // mirror
+  s += `<line x1="${g.cowlX+12}" y1="${g.cowlY+8}" x2="${g.cowlX+4}" y2="${g.cowlY-4}" stroke="${detail}" stroke-width="2"/>`;
+  s += `<rect x="${g.cowlX-2}" y="${g.cowlY-13}" width="14" height="9" rx="3" fill="${accentCol}" stroke="#1F1F23" stroke-width="1.2"/>`;
+
+  // lights
+  const hlFill = onSummary ? '#E4B73C' : accentCol;
+  if (g.drl === 'square') {
+    s += `<rect x="${g.x0+5}" y="${noseY+3}" width="17" height="14" rx="3" fill="${hlFill}" stroke="#1F1F23" stroke-width="1.4"/>`;
+    s += `<rect x="${g.x0+9}" y="${noseY+7}" width="9" height="6" rx="1.5" fill="none" stroke="#1F1F23" stroke-width="1"/>`;
+  } else {
+    s += `<path d="M ${g.x0+3} ${noseY+8} L ${g.x0+38} ${noseY+3} L ${g.x0+38} ${noseY+10} L ${g.x0+4} ${noseY+16} Z" fill="${hlFill}" stroke="#1F1F23" stroke-width="1.2"/>`;
+  }
+  const tail = g.pts[g.pts.length-1];
+  s += `<line x1="${g.x1-46}" y1="${tail[1]+22}" x2="${g.x1-5}" y2="${tail[1]+22}" stroke="${onSummary ? '#451F23' : '#7D7A76'}" stroke-width="5" stroke-linecap="round"/>`;
+  if (onSummary) {
+    s += `<g stroke="#E4B73C" stroke-width="2" stroke-linecap="round" opacity="0.8">
+      <line x1="${g.x0-8}" y1="${noseY+6}" x2="${g.x0-48}" y2="${noseY}"/>
+      <line x1="${g.x0-8}" y1="${noseY+15}" x2="${g.x0-48}" y2="${noseY+21}"/>
+    </g>`;
+  }
+
+  // charge port
+  s += `<rect x="${g.rw+aR-2}" y="${beltYat(g, g.deckX-14)+18}" width="12" height="9" rx="2" fill="none" stroke="${detail}" stroke-width="1.5"/>`;
+
+  // packages: body kit
+  if (state.packages.has('keynote')) {
+    // front splitter: longer and deeper, with an underline detail
+    s += `<path d="M ${g.x0-24} ${s0+9} L ${g.x0+82} ${s0+9} L ${g.x0+82} ${s0-4} L ${g.x0-10} ${s0-4} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
+    s += `<line x1="${g.x0-20}" y1="${s0+2}" x2="${g.x0+76}" y2="${s0+2}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.2" opacity="0.45"/>`;
+    // rear diffuser: wider blade, four strakes
+    const dx1 = g.x1 - 2, dx0 = g.x1 - 112;
+    s += `<path d="M ${dx0} ${s0-5} L ${dx1+14} ${s0-5} L ${dx1+20} ${s0+9} L ${dx0} ${s0+9} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
+    for (let i = 1; i <= 4; i++) {
+      const fx = dx0 + i * (dx1 - dx0) / 5;
+      s += `<line x1="${fx}" y1="${s0-5}" x2="${fx+3}" y2="${s0+9}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="2"/>`;
+    }
+  }
+  if (state.packages.has('sprint')) {
+    const bx0 = g.deckX - 8, bx1 = Math.min(g.x1 + 2, g.deckX + 124);
+    s += `<g stroke="${kitFill}" stroke-width="5" stroke-linecap="round" fill="none">
+      <line x1="${bx0+12}" y1="${g.deckY-2}" x2="${bx0+16}" y2="${g.deckY-24}"/>
+      <line x1="${bx1-16}" y1="${tail[1]-2}" x2="${bx1-10}" y2="${g.deckY-15}"/>
+      <line x1="${bx0+2}" y1="${g.deckY-26}" x2="${bx1+6}" y2="${g.deckY-13}"/>
+    </g>`;
+    // endplate on the wing tip
+    s += `<line x1="${bx1+6}" y1="${g.deckY-22}" x2="${bx1+8}" y2="${g.deckY-4}" stroke="${kitFill}" stroke-width="3.5" stroke-linecap="round"/>`;
+  }
+  if (state.packages.has('workshop')) {
+    const span = g.roofX1 - g.roofX0;
+    const bw = Math.min(158, span - 16);
+    const bx = (g.roofX0 + g.roofX1) / 2 - bw / 2;
+    s += `<line x1="${bx+18}" y1="${g.roofY-8}" x2="${bx+18}" y2="${g.roofY+2}" stroke="#1F1F23" stroke-width="2.5"/>`;
+    s += `<line x1="${bx+bw-18}" y1="${g.roofY-8}" x2="${bx+bw-18}" y2="${g.roofY+2}" stroke="#1F1F23" stroke-width="2.5"/>`;
+    s += `<rect x="${bx}" y="${g.roofY-32}" width="${bw}" height="24" rx="11" fill="${kitFill}" stroke="${kitEdge === 'none' ? '#1F1F23' : kitEdge}" stroke-width="1.6"/>`;
+    // lid seam + Manufaktur stripe detail
+    s += `<line x1="${bx+10}" y1="${g.roofY-22}" x2="${bx+bw-10}" y2="${g.roofY-22}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.3" opacity="0.55"/>`;
+    s += `<line x1="${bx+bw-34}" y1="${g.roofY-29}" x2="${bx+bw-22}" y2="${g.roofY-29}" stroke="#67817F" stroke-width="3" stroke-linecap="round"/>`;
+  }
+
+  // wheels
+  const calCol = pt.accent || '#A8A5A1';
+  s += drawWheel(g.fw, s0, g.r, rimCol, calCol);
+  s += drawWheel(g.rw, s0, g.r, rimCol, calCol);
+
+  s += `</svg>`;
+  return s;
+}
+
+/* ================= MOTOR RENDER ================= */
+function renderMotorSVG() {
+  const people = totalPeople();
+  const hp = totalHp();
+  const t = Math.min(hp / 1000, 1);
+  const motorCol = mix('#C2CDCC', '#1F1F23', t);
+  const rotorCol = darken(motorCol, 0.3);
+  const cx = 400, cy = 220, R = 100;
+
+  let s = `<svg class="stage-svg fadein" viewBox="0 0 900 470" preserveAspectRatio="xMidYMid meet">`;
+
+  if (people === 0) {
+    s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#C2CDCC" stroke-width="2.5" stroke-dasharray="8 8"/>
+      <circle cx="${cx}" cy="${cy}" r="44" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="6 8"/>
+      <text x="${cx}" y="${cy+150}" text-anchor="middle" font-family="Arial" font-size="13" fill="#A8A5A1">Add crew to assemble your motor</text>
+      </svg>`;
+    return s;
+  }
+
+  s += `<circle cx="${cx}" cy="${cy}" r="${R+14}" fill="none" stroke="#67817F" stroke-width="${3 + t*9}" opacity="${0.18 + t*0.62}"/>`;
+
+  const fins = Math.min(people, 12);
+  for (let i = 0; i < fins; i++) {
+    const ang = (-90 + i * (360 / fins)) * Math.PI / 180;
+    const x1 = cx + Math.cos(ang) * (R + 2), y1 = cy + Math.sin(ang) * (R + 2);
+    const x2 = cx + Math.cos(ang) * (R + 20), y2 = cy + Math.sin(ang) * (R + 20);
+    s += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#30373B" stroke-width="5" stroke-linecap="round"/>`;
+  }
+
+  s += `<path d="M ${cx-70} ${cy+R-8} L ${cx-96} ${cy+R+34} L ${cx-46} ${cy+R+34} Z" fill="#A8A5A1" stroke="#1F1F23" stroke-width="2"/>`;
+  s += `<path d="M ${cx+70} ${cy+R-8} L ${cx+46} ${cy+R+34} L ${cx+96} ${cy+R+34} Z" fill="#A8A5A1" stroke="#1F1F23" stroke-width="2"/>`;
+  s += `<line x1="${cx-120}" y1="${cy+R+34}" x2="${cx+120}" y2="${cy+R+34}" stroke="#1F1F23" stroke-width="3"/>`;
+
+  s += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="${motorCol}" stroke="#1F1F23" stroke-width="3"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="66" fill="none" stroke="${lighten(motorCol,0.25)}" stroke-width="2" stroke-dasharray="4 7"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="44" fill="${rotorCol}" stroke="#1F1F23" stroke-width="2.5"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="10" fill="#F8F5E7" stroke="#1F1F23" stroke-width="2"/>`;
+
+  s += `<path d="M ${cx+8} ${cy-30} L ${cx-14} ${cy+4} L ${cx+2} ${cy+4} L ${cx-8} ${cy+30} L ${cx+16} ${cy-4} L ${cx} ${cy-4} Z" fill="none" stroke="#E4B73C" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  s += `<rect x="${cx+R}" y="${cy-11}" width="58" height="22" rx="3" fill="#A8A5A1" stroke="#1F1F23" stroke-width="2"/>`;
+  s += `<circle cx="${cx+R+72}" cy="${cy}" r="17" fill="none" stroke="#1F1F23" stroke-width="2.5"/>`;
+  s += `<circle cx="${cx+R+72}" cy="${cy}" r="6" fill="none" stroke="#1F1F23" stroke-width="1.5"/>`;
+
+  s += `<path d="M ${cx+30} ${cy-R+6} Q ${cx+120} ${cy-R-58} ${cx+188} ${cy-R-30}" fill="none" stroke="#67817F" stroke-width="4.5" stroke-linecap="round"/>`;
+  s += `<rect x="${cx+186}" y="${cy-R-52}" width="118" height="48" rx="3" fill="#F1F4F3" stroke="#1F1F23" stroke-width="2"/>`;
+  s += `<text x="${cx+245}" y="${cy-R-30}" text-anchor="middle" font-family="Arial" font-size="10" letter-spacing="2" fill="#30373B">INVERTER</text>`;
+  s += `<text x="${cx+245}" y="${cy-R-15}" text-anchor="middle" font-family="Arial" font-size="8" letter-spacing="1" fill="#A8A5A1">HIGH VOLTAGE</text>`;
+
+  s += `<text x="${cx}" y="${cy+R+92}" text-anchor="middle" font-family="'Palatino Linotype', Palatino, Georgia, serif" font-size="44" fill="#67817F">${hp}<tspan font-family="Arial" font-size="13" fill="#30373B" letter-spacing="2" dx="6">HP</tspan></text>`;
+  s += `<text x="${cx}" y="${cy+R+114}" text-anchor="middle" font-family="Arial" font-size="12" letter-spacing="2" fill="#A8A5A1">${kW()} KW · ${motorLabel(people).toUpperCase()} · ${fins} COOLING FIN${fins===1?'':'S'}</text>`;
+
+  s += `</svg>`;
+  return s;
+}
+
+/* ================= STAGE ================= */
+function updateStage() {
+  const stage = document.getElementById('stage');
+  const step = STEPS[state.stepIndex];
+  stage.innerHTML = step === 'powertrain' ? renderMotorSVG() : renderCarSVG();
+
+  const proj = currentProject();
+  const plate = document.getElementById('stagePlate');
+  plate.innerHTML = proj
+    ? `<b>${getBuildName(true)}</b>${step === 'powertrain' ? ' &nbsp;·&nbsp; powertrain view' : ''}`
+    : 'Implement Manufaktur';
+}
+
+/* ================= SPEC STRIP ================= */
+function renderSpecStrip() {
+  const el = document.getElementById('specStrip');
+  const proj = currentProject();
+  const people = totalPeople();
+  const cells = [
+    { k:'Model',      v: proj ? getBuildName(true).replace(/^The /,'') : null },
+    { k:'Body',       v: proj ? proj.model : null },
+    { k:'Paint job',  v: state.practices.size ? [...state.practices].join(' × ') : null },
+    { k:'Powertrain', v: people ? motorLabel(people) + ' Electric' : null },
+    { k:'Output',     v: people ? totalHp() + ' hp · ' + kW() + ' kW' : null },
+    { k:'Crew',       v: people ? people + ' · ' + tierName(people) : null },
+    { k:'Options',    v: state.packages.size ? [...state.packages].map(id=>PACKAGES.find(p=>p.id===id).tag).join(' · ') : null },
+  ];
+  el.innerHTML = cells.map(c => `
+    <div class="spec-cell">
+      <div class="k">${c.k}</div>
+      <div class="v ${c.v ? '' : 'dim'}">${c.v || '—'}</div>
+    </div>
+  `).join('');
+}
+
+/* ================= BUILD RAIL ================= */
+function renderBuildRail() {
+  const el = document.getElementById('buildRail');
+  const chips = [];
+  const proj = currentProject();
+  if (proj) chips.push({t: proj.model});
+  state.practices.forEach(id => chips.push({t:id}));
+  const people = totalPeople();
+  if (people) chips.push({t: totalHp() + ' hp · ' + motorLabel(people)});
+  state.packages.forEach(id => chips.push({t: PACKAGES.find(p=>p.id===id).tag, dim:true}));
+
+  el.innerHTML = `
+    <span class="rail-label">Your build so far</span>
+    ${chips.length
+      ? chips.map(c => `<span class="rail-chip ${c.dim?'dim':''}">${c.t}</span>`).join('')
+      : '<span class="rail-empty">Nothing selected yet</span>'}
+  `;
+}
+
+/* ================= NAV ================= */
+function canProceedFrom(stepIdx) {
+  const step = STEPS[stepIdx];
+  if (step === 'project') return !!state.project;
+  if (step === 'paint') return state.practices.size > 0;
+  if (step === 'powertrain') return totalPeople() > 0;
+  return true;
+}
+
+function renderFooter() {
+  const back = document.getElementById('backBtn');
+  const next = document.getElementById('nextBtn');
+  back.disabled = state.stepIndex === 0;
+  const isLast = state.stepIndex === STEPS.length - 1;
+  next.textContent = isLast ? 'Start Over' : (STEPS[state.stepIndex] === 'packages' ? 'See My Build' : 'Next');
+  next.disabled = !isLast && !canProceedFrom(state.stepIndex);
+
+  const surprise = document.getElementById('surpriseBtn');
+  surprise.style.display = isLast ? 'none' : '';
+  surprise.onclick = randomBuild;
+
+  back.onclick = () => { if (state.stepIndex > 0) { state.stepIndex--; renderAll(); } };
+  next.onclick = () => {
+    if (isLast) { state = freshState(); openInfo.clear(); }
+    else state.stepIndex++;
+    renderAll();
+  };
+}
+
+/* ================= SURPRISE ME ================= */
+function pick(arr, n) {
+  const copy = arr.slice();
+  const out = [];
+  while (out.length < n && copy.length) out.push(copy.splice(Math.floor(Math.random()*copy.length), 1)[0]);
+  return out;
+}
+function randomBuild() {
+  state = freshState();
+  openInfo.clear();
+
+  state.project = PROJECTS[Math.floor(Math.random()*PROJECTS.length)].id;
+  pick(PRACTICES.map(p => p.id), 2 + Math.floor(Math.random()*4)).forEach(id => state.practices.add(id));
+
+  const crewSize = 2 + Math.floor(Math.random()*5);
+  const roleIds = pick(ROLES.map(r => r.id), 2 + Math.floor(Math.random()*2));
+  let left = crewSize;
+  roleIds.forEach((id, i) => {
+    const take = (i === roleIds.length - 1) ? left : 1 + Math.floor(Math.random()*Math.max(1, left - (roleIds.length - 1 - i)));
+    if (take > 0) { state.engine[id] = take; left -= take; }
+  });
+  if (totalPeople() === 0) state.engine[ROLES[3].id] = 2;
+
+  pick(PACKAGES.map(p => p.id), 1 + Math.floor(Math.random()*2)).forEach(id => state.packages.add(id));
+
+  state.stepIndex = STEPS.indexOf('summary');
+  renderAll();
+}
+
+/* ================= MASTER ================= */
+function renderAll() {
+  renderStepper();
+  renderConfigBody();
+  updateStage();
+  renderSpecStrip();
+  renderBuildRail();
+  renderFooter();
+  resetIdle();
+}
+
+/* ================= IDLE / ATTRACT ================= */
+function showAttract() { document.getElementById('attract').classList.remove('hidden'); }
+function hideAttract() { document.getElementById('attract').classList.add('hidden'); }
+function resetIdle() {
+  if (idleTimer) clearTimeout(idleTimer);
+  idleTimer = setTimeout(showAttract, IDLE_MS);
+}
+document.getElementById('attract').addEventListener('click', () => {
+  hideAttract();
+  state = freshState();
+  openInfo.clear();
+  renderAll();
+});
+['click','touchstart','pointerdown'].forEach(evt => {
+  document.getElementById('app').addEventListener(evt, resetIdle, { passive: true });
+});
+
+/* ================= STAFF PANEL: triple-tap logo ================= */
+let logoTaps = [];
+document.getElementById('logoTap').addEventListener('click', () => {
+  const now = Date.now();
+  logoTaps = logoTaps.filter(t => now - t < 1200);
+  logoTaps.push(now);
+  if (logoTaps.length >= 3) {
+    logoTaps = [];
+    document.getElementById('staffPanel').classList.add('open');
+  }
+});
+document.getElementById('staffReset').addEventListener('click', () => {
+  document.getElementById('staffPanel').classList.remove('open');
+  state = freshState();
+  openInfo.clear();
+  renderAll();
+  showAttract();
+});
+document.getElementById('staffClose').addEventListener('click', () => {
+  document.getElementById('staffPanel').classList.remove('open');
+});
+
+/* ================= INIT (opens on "Press to start") ================= */
+renderAll();
+</script>
+</body>
+</html>
