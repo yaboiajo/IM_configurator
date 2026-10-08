@@ -586,62 +586,10 @@ const PROJECTS = [
     suggest:['Leadership','People','Communication'] },
 ];
 
-/* Body definitions.
-   pts = top profile (Catmull-Rom spline, front → rear).
-   Anchors (cowl/roof/deck/tail) drive glass, seams, bands and kit placement. */
-const GROUND = 392;
-const GEO = {
-  strategy: { /* Grand Tourer: long dash-to-axle, low fast roof, tapering fastback tail */
-    x0:100, x1:800, r:41, fw:268, rw:664, doors:1,
-    pts:[[118,292],[210,283],[300,275],[368,268],[436,224],[510,215],[584,222],[640,240],[688,258],[740,264],[784,270]],
-    cowlX:368, cowlY:268, roofX0:436, roofY:219, roofX1:584, deckX:688, deckY:258, tailY:270,
-  },
-  opex: { /* Hot Hatch: short nose, long roof, steep hatch */
-    x0:200, x1:696, r:38, fw:298, rw:602, doors:2,
-    pts:[[216,282],[256,272],[296,258],[348,208],[436,199],[524,204],[576,214],[620,232],[662,235],[680,236]],
-    cowlX:296, cowlY:258, roofX0:348, roofY:202, roofX1:524, deckX:620, deckY:232, tailY:236,
-  },
-  digital: { /* Aero Sedan: one continuous arc */
-    x0:108, x1:792, r:40, fw:258, rw:652, doors:2,
-    pts:[[126,298],[220,286],[324,268],[414,214],[492,205],[568,212],[622,228],[668,248],[724,258],[774,264]],
-    cowlX:324, cowlY:268, roofX0:414, roofY:209, roofX1:568, deckX:668, deckY:248, tailY:264,
-  },
-  orgchange: { /* SUV: upright windshield, long flat roof, boxy high tail */
-    x0:132, x1:772, r:46, fw:272, rw:638, doors:2, archR:55,
-    pts:[[150,252],[216,244],[280,236],[336,178],[470,172],[610,176],[644,200],[668,214],[716,218],[754,222]],
-    cowlX:280, cowlY:236, roofX0:336, roofY:175, roofX1:610, deckX:668, deckY:214, tailY:222,
-  },
-  supply: { /* Transporter: cab-forward, huge flat roof, vertical rear */
-    x0:140, x1:782, r:38, fw:262, rw:656, doors:2,
-    pts:[[156,252],[188,242],[218,232],[266,170],[480,164],[706,168],[742,172],[762,176]],
-    cowlX:218, cowlY:232, roofX0:266, roofY:166, roofX1:706, deckX:742, deckY:178, tailY:176,
-  },
-  growth: { /* Roadster: long bonnet, low screen, speedster hump */
-    x0:140, x1:764, r:39, fw:288, rw:640, doors:1, openTop:true,
-    pts:[[158,290],[250,278],[340,270],[418,264],[452,244],[470,240],[490,252],[524,244],[556,252],[600,258],[680,264],[748,270]],
-    cowlX:418, cowlY:264, roofX0:452, roofY:240, roofX1:524, deckX:600, deckY:258, tailY:270,
-  },
-  pmi: { /* Stretched Executive: very long roof, three doors */
-    x0:62, x1:848, r:39, fw:208, rw:716, doors:3,
-    pts:[[80,282],[160,270],[238,258],[308,206],[480,198],[666,204],[712,226],[748,246],[798,254],[832,260]],
-    cowlX:238, cowlY:258, roofX0:308, roofY:201, roofX1:666, deckX:748, deckY:246, tailY:260,
-  },
-  sustain: { /* City EV, R5-style: flat short bonnet, upright glasshouse, thick C-pillar, near-vertical hatch, chunky arches */
-    x0:246, x1:658, r:38, fw:320, rw:584, doors:2, archR:51, drl:'square',
-    pts:[[262,258],[298,252],[330,248],[368,196],[452,190],[536,196],[572,210],[596,228],[626,232],[640,236]],
-    cowlX:330, cowlY:248, roofX0:368, roofY:192, roofX1:536, deckX:596, deckY:228, tailY:236,
-  },
-  leadership: { /* Executive Sedan: classic three-box */
-    x0:112, x1:788, r:40, fw:254, rw:648, doors:2,
-    pts:[[130,280],[212,270],[298,258],[378,200],[470,192],[564,198],[612,218],[656,242],[716,248],[768,252]],
-    cowlX:298, cowlY:258, roofX0:378, roofY:195, roofX1:564, deckX:656, deckY:242, tailY:252,
-  },
-  gtm: { /* Supercar: low nose, cab-forward teardrop, muscular rear haunch */
-    x0:92, x1:792, r:40, fw:246, rw:646, doors:1, archR:46,
-    pts:[[110,314],[170,306],[232,300],[284,294],[362,254],[418,247],[476,252],[524,266],[568,278],[640,272],[700,284],[762,292]],
-    cowlX:284, cowlY:294, roofX0:362, roofY:250, roofX1:476, deckX:568, deckY:278, tailY:292,
-  },
-};
+/* Car bodies: metres, 150 px/m, one shared scale (from the approved lineup) */
+const CARS = {"leadership": {"model": "Executive Sedan", "length": 5.0, "height": 1.375, "top": [[0.0, 0.616], [0.107, 0.69], [0.16, 0.731], [0.405, 0.822], [0.8, 0.893], [1.493, 0.96], [1.994, 1.237], [2.154, 1.312], [2.26, 1.341], [2.463, 1.375], [3.358, 1.375], [3.571, 1.351], [3.763, 1.302], [4.35, 1.051], [4.829, 0.963], [4.872, 0.904], [5.0, 0.585]], "wheels": [{"cx": 0.778, "cy": 0.355, "r": 0.355, "arch": 0.405}, {"cx": 3.923, "cy": 0.355, "r": 0.355, "arch": 0.405}], "lower": {"front": 0.17, "sill": 0.13, "rearStart": [4.232, 0.18], "rearEnd": [5.0, 0.29]}, "anchors": {"cowl": 1.54, "aTop": 2.14, "cBase": 4.1, "deck": 4.59, "beltF": 0.98, "beltR": 1.01}, "seams": [1.38, 2.58, 3.5], "handles": [2.48, 3.4], "bPillar": 2.58}, "pmi": {"model": "Stretched Executive", "length": 5.5, "height": 1.375, "top": [[0.0, 0.616], [0.107, 0.69], [0.16, 0.731], [0.405, 0.822], [0.8, 0.893], [1.493, 0.96], [1.994, 1.237], [2.154, 1.312], [2.26, 1.341], [2.463, 1.375], [3.858, 1.375], [4.071, 1.351], [4.263, 1.302], [4.85, 1.051], [5.329, 0.963], [5.372, 0.904], [5.5, 0.585]], "wheels": [{"cx": 0.778, "cy": 0.355, "r": 0.355, "arch": 0.405}, {"cx": 4.423, "cy": 0.355, "r": 0.355, "arch": 0.405}], "lower": {"front": 0.17, "sill": 0.13, "rearStart": [4.732, 0.18], "rearEnd": [5.5, 0.29]}, "anchors": {"cowl": 1.54, "aTop": 2.14, "cBase": 4.6, "deck": 5.09, "beltF": 0.98, "beltR": 1.01}, "seams": [1.38, 2.58, 3.3, 4.0], "handles": [2.48, 3.9], "bPillar": 2.58, "extraPillar": 3.3}, "digital": {"model": "Aero Sedan", "length": 4.85, "height": 1.44, "top": [[0.0, 0.55], [0.06, 0.68], [0.45, 0.78], [1.1, 0.88], [1.6, 0.96], [2.2, 1.3], [2.65, 1.42], [3.05, 1.44], [3.5, 1.38], [4.0, 1.18], [4.45, 1.02], [4.75, 0.93], [4.85, 0.78]], "wheels": [{"cx": 0.88, "cy": 0.34, "r": 0.34, "arch": 0.39}, {"cx": 3.83, "cy": 0.34, "r": 0.34, "arch": 0.39}], "lower": {"front": 0.15, "sill": 0.14, "rearStart": [4.22, 0.16], "rearEnd": [4.85, 0.25]}, "anchors": {"cowl": 1.6, "aTop": 2.3, "cBase": 4.15, "deck": 4.5, "beltF": 0.97, "beltR": 1.03}, "seams": [1.45, 2.6, 3.45], "handles": [2.5, 3.35], "bPillar": 2.6}, "strategy": {"model": "Grand Tourer", "length": 4.8, "height": 1.3, "top": [[0.0, 0.5], [0.08, 0.62], [0.5, 0.74], [1.2, 0.84], [1.95, 0.92], [2.5, 1.22], [2.8, 1.29], [3.2, 1.3], [3.55, 1.24], [3.95, 1.08], [4.35, 0.96], [4.7, 0.9], [4.8, 0.72]], "wheels": [{"cx": 0.85, "cy": 0.35, "r": 0.35, "arch": 0.4}, {"cx": 3.65, "cy": 0.35, "r": 0.35, "arch": 0.4}], "lower": {"front": 0.14, "sill": 0.13, "rearStart": [4.05, 0.15], "rearEnd": [4.8, 0.24]}, "anchors": {"cowl": 1.95, "aTop": 2.55, "cBase": 4.0, "deck": 4.35, "beltF": 0.9, "beltR": 0.95}, "seams": [2.1, 3.25], "handles": [3.1], "bPillar": null}, "gtm": {"model": "Supercar", "length": 4.5, "height": 1.2, "top": [[0.0, 0.42], [0.08, 0.52], [0.5, 0.64], [1.1, 0.74], [1.55, 0.8], [2.05, 1.1], [2.35, 1.19], [2.75, 1.2], [3.05, 1.16], [3.45, 1.02], [3.85, 0.96], [4.2, 0.98], [4.45, 0.92], [4.5, 0.76]], "wheels": [{"cx": 0.95, "cy": 0.34, "r": 0.34, "arch": 0.39}, {"cx": 3.6, "cy": 0.35, "r": 0.35, "arch": 0.4}], "lower": {"front": 0.11, "sill": 0.1, "rearStart": [4.0, 0.12], "rearEnd": [4.5, 0.2]}, "anchors": {"cowl": 1.55, "aTop": 2.2, "cBase": 3.5, "deck": 3.9, "beltF": 0.76, "beltR": 0.82}, "seams": [1.75, 3.05], "handles": [2.9], "bPillar": null}, "growth": {"model": "Roadster", "length": 4.55, "height": 1.12, "top": [[0.0, 0.42], [0.1, 0.52], [0.5, 0.62], [1.1, 0.74], [1.7, 0.84], [2.0, 0.875], [2.35, 0.86], [2.7, 0.94], [3.05, 1.09], [3.35, 1.12], [3.7, 1.07], [4.1, 1.02], [4.45, 0.96], [4.55, 0.78]], "wheels": [{"cx": 0.9, "cy": 0.35, "r": 0.35, "arch": 0.4}, {"cx": 3.6, "cy": 0.35, "r": 0.35, "arch": 0.4}], "lower": {"front": 0.12, "sill": 0.11, "rearStart": [4.0, 0.13], "rearEnd": [4.55, 0.2]}, "anchors": {"cowl": 1.7, "aTop": 2.0, "cBase": 2.4, "deck": 4.3, "beltF": 0.78, "beltR": 0.84, "boxStart": 3.45, "boxEnd": 4.05}, "seams": [1.85, 3.1], "handles": [2.95], "bPillar": null, "openTop": true}, "opex": {"model": "Hot Hatch", "length": 4.3, "height": 1.45, "top": [[0.0, 0.62], [0.06, 0.74], [0.4, 0.84], [0.95, 0.92], [1.4, 0.98], [1.9, 1.32], [2.2, 1.42], [2.7, 1.45], [3.2, 1.44], [3.55, 1.4], [3.85, 1.28], [4.08, 1.1], [4.2, 0.96], [4.3, 0.82]], "wheels": [{"cx": 0.85, "cy": 0.33, "r": 0.33, "arch": 0.38}, {"cx": 3.48, "cy": 0.33, "r": 0.33, "arch": 0.38}], "lower": {"front": 0.17, "sill": 0.16, "rearStart": [3.86, 0.18], "rearEnd": [4.3, 0.26]}, "anchors": {"cowl": 1.4, "aTop": 2.0, "cBase": 3.95, "deck": 4.1, "beltF": 0.98, "beltR": 1.03}, "seams": [1.3, 2.4, 3.1], "handles": [2.3, 3.0], "bPillar": 2.4}, "sustain": {"model": "City EV", "length": 3.9, "height": 1.5, "top": [[0.0, 0.7], [0.05, 0.82], [0.3, 0.9], [0.7, 0.95], [1.05, 0.98], [1.45, 1.3], [1.75, 1.44], [2.3, 1.5], [2.85, 1.49], [3.25, 1.43], [3.55, 1.31], [3.74, 1.14], [3.84, 0.98], [3.9, 0.86]], "wheels": [{"cx": 0.72, "cy": 0.33, "r": 0.33, "arch": 0.395}, {"cx": 3.22, "cy": 0.33, "r": 0.33, "arch": 0.395}], "lower": {"front": 0.19, "sill": 0.17, "rearStart": [3.62, 0.19], "rearEnd": [3.9, 0.28]}, "anchors": {"cowl": 1.05, "aTop": 1.65, "cBase": 3.55, "deck": 3.74, "beltF": 1.0, "beltR": 1.05}, "seams": [1.15, 2.1, 2.82], "handles": [2.0, 2.72], "bPillar": 2.1, "drl": "square"}, "orgchange": {"model": "SUV", "length": 4.95, "height": 1.75, "top": [[0.0, 0.74], [0.05, 0.92], [0.2, 1.0], [0.6, 1.07], [1.0, 1.13], [1.4, 1.21], [1.85, 1.62], [2.15, 1.73], [2.8, 1.76], [3.6, 1.76], [4.5, 1.75], [4.82, 1.7], [4.93, 1.55], [4.95, 1.25]], "wheels": [{"cx": 0.9, "cy": 0.38, "r": 0.38, "arch": 0.44}, {"cx": 3.85, "cy": 0.38, "r": 0.38, "arch": 0.44}], "lower": {"front": 0.26, "sill": 0.24, "rearStart": [4.29, 0.26], "rearEnd": [4.95, 0.34]}, "anchors": {"cowl": 1.4, "aTop": 2.1, "cBase": 4.72, "deck": 4.85, "beltF": 1.22, "beltR": 1.27}, "seams": [1.42, 2.5, 3.4], "handles": [2.4, 3.3], "bPillar": 2.5, "rails": true, "drl": "flat"}, "supply": {"model": "Transporter", "length": 5.1, "height": 1.95, "top": [[0.0, 0.72], [0.05, 0.9], [0.3, 1.02], [0.65, 1.12], [0.95, 1.3], [1.25, 1.6], [1.55, 1.83], [1.9, 1.93], [3.0, 1.95], [4.5, 1.94], [4.98, 1.93], [5.08, 1.84], [5.1, 1.45]], "wheels": [{"cx": 0.95, "cy": 0.34, "r": 0.34, "arch": 0.4}, {"cx": 4.05, "cy": 0.34, "r": 0.34, "arch": 0.4}], "lower": {"front": 0.27, "sill": 0.25, "rearStart": [4.45, 0.27], "rearEnd": [5.1, 0.3]}, "anchors": {"cowl": 0.85, "aTop": 1.7, "cBase": 4.9, "deck": 4.95, "beltF": 1.2, "beltR": 1.25}, "seams": [1.2, 2.35, 3.6], "handles": [2.25, 3.5], "bPillar": 2.35, "extraPillar": 3.6}};
+const PX = 150, GROUND = 392, VB_W = 900, VB_H = 470;
+
 
 /* Expertise areas — mirrored from implementconsultinggroup.com/what-we-do */
 const PRACTICES = [
@@ -1185,248 +1133,128 @@ function buildPrintArea() {
   `;
 }
 
-/* ================= CAR RENDER ================= */
-/* Catmull-Rom spline through points → cubic Bezier path segment */
-function crSegments(pts) {
-  let d = '';
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(i-1, 0)];
-    const p1 = pts[i];
-    const p2 = pts[i+1];
-    const p3 = pts[Math.min(i+2, pts.length-1)];
-    const c1x = p1[0] + (p2[0]-p0[0])/6, c1y = p1[1] + (p2[1]-p0[1])/6;
-    const c2x = p2[0] - (p3[0]-p1[0])/6, c2y = p2[1] - (p3[1]-p1[1])/6;
-    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0]} ${p2[1]}`;
+/* ================= CAR RENDER (lineup drawing system) ================= */
+function cr(pts,t=0.75){let d='';for(let i=0;i<pts.length-1;i++){const p0=pts[Math.max(i-1,0)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(i+2,pts.length-1)];
+ d+=` C ${(p1[0]+(p2[0]-p0[0])*t/6).toFixed(1)} ${(p1[1]+(p2[1]-p0[1])*t/6).toFixed(1)} ${(p2[0]-(p3[0]-p1[0])*t/6).toFixed(1)} ${(p2[1]-(p3[1]-p1[1])*t/6).toFixed(1)} ${p2[0]} ${p2[1]}`;}return d;}
+
+function drawCar(S, o){
+  o=Object.assign({body:null,roof:null,stripe:null,rocker:null,accent:null,nose:null,tail:null,pin:null,sillpin:null,kit:null,packages:new Set(),lightsOn:false,clipId:'c'},o);
+  const ox=(VB_W-S.length*PX)/2;
+  const X=m=>+(ox+m*PX).toFixed(1), Y=m=>+(GROUND-m*PX).toFixed(1);
+  const A=S.anchors, L=S.lower, [fw,rw]=S.wheels;
+  const topY=xm=>{const t=S.top;for(let i=0;i<t.length-1;i++){if(xm>=t[i][0]&&xm<=t[i+1][0]){const f=(xm-t[i][0])/(t[i+1][0]-t[i][0]);return t[i][1]+(t[i+1][1]-t[i][1])*f;}}return t[t.length-1][1];};
+  const x0=X(0),x1=X(S.length),fwx=X(fw.cx),rwx=X(rw.cx),hubF=Y(fw.cy),hubR=Y(rw.cy);
+  const lipF=Y(L.front),sill=Y(L.sill),rS=[X(L.rearStart[0]),Y(L.rearStart[1])],rE=[x1,Y(L.rearEnd[1])];
+  const rearY=x=>rS[1]+(rE[1]-rS[1])*(x-rS[0])/(rE[0]-rS[0]);
+  const arcEnds=(w,hub,yl,yr)=>{const R=w.arch*PX,cx=X(w.cx);return{cx,R,xl:cx-Math.sqrt(Math.max(0,R*R-(yl-hub)**2)),xr:cx+Math.sqrt(Math.max(0,R*R-(yr-hub)**2))};};
+  const fa=arcEnds(fw,hubF,lipF,sill), ra=arcEnds(rw,hubR,sill,rearY(X(rw.cx)+rw.arch*PX));
+  const top=S.top.map(p=>[X(p[0]),Y(p[1])]);
+  let bp=`M ${x0} ${lipF} L ${top[0][0]} ${top[0][1]}`+cr(top)+` L ${rE[0]} ${rE[1]} L ${ra.xr.toFixed(1)} ${rearY(ra.xr).toFixed(1)} A ${ra.R.toFixed(1)} ${ra.R.toFixed(1)} 0 0 0 ${ra.xl.toFixed(1)} ${sill} L ${fa.xr.toFixed(1)} ${sill} A ${fa.R.toFixed(1)} ${fa.R.toFixed(1)} 0 0 0 ${fa.xl.toFixed(1)} ${lipF} L ${x0} ${lipF} Z`;
+
+  const hasPaint=!!o.body,bodyFill=hasPaint?o.body:'#F1F4F3',dark=lum(bodyFill)<.35,detail=dark?'#F8F5E7':'#1F1F23';
+  const accent=o.accent||(hasPaint?darken(o.body,.3):'#A8A5A1'),rimCol=o.accent||'#C9C7C4',kitFill=o.kit||'#1F1F23',kitEdge=lum(kitFill)>.6?'#1F1F23':(dark?'#F8F5E7':'none'),kitLine=lum(kitFill)>.6?'#1F1F23':'#F8F5E7';
+  const beltF=Y(A.beltF),beltR=Y(A.beltR),cowlX=X(A.cowl),deckX=X(A.deck),aTopX=X(A.aTop),cBaseX=X(A.cBase);
+  const gx0=A.cowl+.14, gx1=A.cBase-.05;
+  const beltAt=x=>beltF+(beltR-beltF)*Math.max(0,Math.min(1,(x-X(gx0))/(X(gx1)-X(gx0))));
+
+  let s=`<svg viewBox="0 0 ${VB_W} ${VB_H}" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="${o.clipId}"><path d="${bp}"/></clipPath></defs>`;
+  s+=`<line x1="30" y1="${GROUND}" x2="${VB_W-30}" y2="${GROUND}" stroke="#E1E6E5" stroke-width="1.5"/><ellipse cx="${(x0+x1)/2}" cy="${GROUND+3}" rx="${(x1-x0)/2+8}" ry="7" fill="#F2F2F1"/>`;
+  // wheel wells (inside the arch only)
+  [[fa,hubF,lipF],[ra,hubR,sill]].forEach(([a,hub,edge])=>{const hw=Math.sqrt(Math.max(0,a.R*a.R-(edge-hub)**2));s+=`<path d="M ${(a.cx-hw).toFixed(1)} ${edge} A ${a.R} ${a.R} 0 0 1 ${(a.cx+hw).toFixed(1)} ${edge} Z" fill="#17181B"/>`;});
+  // side skirts
+  if(o.packages.has('deepdive')){const sx0=fa.xr+2,sx1=ra.xl-2;s+=`<path d="M ${sx0-8} ${sill-3} L ${sx1+8} ${sill-3} L ${sx1+2} ${sill+13} L ${sx0-2} ${sill+13} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/><line x1="${sx0+14}" y1="${sill+5}" x2="${sx1-14}" y2="${sill+5}" stroke="${kitLine}" stroke-width="1.2" opacity=".45"/>`;}
+  // body + livery
+  s+=`<path d="${bp}" fill="${bodyFill}"/><g clip-path="url(#${o.clipId})">`;
+  if(o.nose)s+=`<rect x="${x0-10}" y="0" width="${(cowlX-x0)*.55+10}" height="${VB_H}" fill="${o.nose}"/>`;
+  if(o.tail){const tx=deckX+(x1-deckX)*.35;s+=`<rect x="${tx}" y="0" width="${x1-tx+20}" height="${VB_H}" fill="${o.tail}"/>`;}
+  if(o.rocker)s+=`<rect x="${x0}" y="${sill-16}" width="${x1-x0}" height="16" fill="${o.rocker}"/>`;
+  if(o.roof){ if(S.openTop) s+=`<rect x="${X(A.cBase)}" y="0" width="${x1-X(A.cBase)+20}" height="${Y(topY(A.deck))+8}" fill="${o.roof}"/>`;
+              else s+=`<rect x="${aTopX-70}" y="0" width="${cBaseX-aTopX+140}" height="${Y(Math.min(topY(A.aTop+0.1),topY(A.cBase-0.1))-0.08)}" fill="${o.roof}"/>`; }
+  if(o.stripe)s+=`<path d="M ${x0-10} ${beltF+30} Q ${cowlX} ${beltF+12} ${(cowlX+deckX)/2} ${(beltF+beltR)/2+24} T ${x1+10} ${beltR+30}" fill="none" stroke="${o.stripe}" stroke-width="13"/>`;
+  if(o.pin)s+=`<path d="M ${x0-10} ${beltF+45} Q ${cowlX} ${beltF+27} ${(cowlX+deckX)/2} ${(beltF+beltR)/2+39} T ${x1+10} ${beltR+45}" fill="none" stroke="${o.pin}" stroke-width="4"/>`;
+  if(o.sillpin)s+=`<rect x="${x0}" y="${sill-21}" width="${x1-x0}" height="3.5" fill="${o.sillpin}"/>`;
+  s+=`<rect x="${x0+6}" y="${lipF-26}" width="${Math.min(54,fa.xl-x0-14)}" height="9" rx="4" fill="#1F1F23" opacity=".82"/></g>`;
+  s+=`<path d="${bp}" fill="none" stroke="#1F1F23" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  // glasshouse
+  const off=.055;
+  if(S.openTop){
+    s+=`<line x1="${X(A.cowl+.12)}" y1="${Y(topY(A.cowl+.12))+2}" x2="${X(A.aTop)}" y2="${Y(topY(A.aTop))+4}" stroke="#2A3136" stroke-width="5" stroke-linecap="round"/>`;
+  } else {
+    const gl=[];for(let xm=gx0;xm<=gx1;xm+=.1)gl.push([X(xm),Y(topY(xm)-off)]);gl.push([X(gx1),Y(topY(gx1)-off)]);
+    s+=`<path d="M ${X(gx0)} ${beltF+2} L ${gl[0][0]} ${gl[0][1]}${cr(gl)} L ${X(gx1)} ${beltR+1} Z" fill="#2A3136" stroke="#1F1F23" stroke-width="1.6"/>`;
+    s+=`<line x1="${X(A.aTop+.25)}" y1="${Y(topY(A.aTop+.25)-off)+6}" x2="${X(A.cowl+.38)}" y2="${beltF-4}" stroke="#fff" stroke-width="2.5" opacity=".22"/>`;
+    [S.bPillar,S.extraPillar].filter(Boolean).forEach(px=>{const bx=X(px);s+=`<line x1="${bx}" y1="${Y(topY(px)-off)+2}" x2="${bx+2}" y2="${beltAt(bx)+1}" stroke="${bodyFill}" stroke-width="7"/><line x1="${bx}" y1="${Y(topY(px)-off)+2}" x2="${bx+2}" y2="${beltAt(bx)+1}" stroke="#1F1F23" stroke-width="1" opacity=".4"/>`;});
   }
-  return d;
-}
-
-function carOutlineD(g) {
-  const s = GROUND - g.r;
-  const aR = g.archR || g.r + 9;
-  const nose = g.pts[0];
-  const tail = g.pts[g.pts.length-1];
-  return `M ${g.x0+12} ${s}
-    C ${g.x0+2} ${s-2} ${g.x0} ${s-14} ${g.x0} ${nose[1]+34}
-    L ${g.x0-3} ${nose[1]+22}
-    Q ${g.x0-3} ${nose[1]+6} ${nose[0]} ${nose[1]}
-    ${crSegments(g.pts)}
-    Q ${g.x1} ${tail[1]+4} ${g.x1} ${tail[1]+18}
-    L ${g.x1} ${s-14}
-    Q ${g.x1} ${s} ${g.x1-14} ${s}
-    L ${g.rw+aR} ${s}
-    A ${aR} ${aR} 0 0 0 ${g.rw-aR} ${s}
-    L ${g.fw+aR} ${s}
-    A ${aR} ${aR} 0 0 0 ${g.fw-aR} ${s}
-    Z`;
-}
-
-function beltYat(g, x) {
-  const p1 = { x: g.cowlX+18, y: g.cowlY+10 };
-  const p4 = { x: g.deckX-10, y: g.deckY+6 };
-  const t = (x - p1.x) / (p4.x - p1.x);
-  return p1.y + (p4.y - p1.y) * Math.max(0, Math.min(1, t));
-}
-
-function drawWheel(wx, s, r, rimCol, calCol) {
-  let w = '';
-  w += `<circle cx="${wx}" cy="${s}" r="${r}" fill="#26262B" stroke="#141416" stroke-width="2.5"/>`;
-  w += `<circle cx="${wx}" cy="${s}" r="${r-4}" fill="none" stroke="#3A3A40" stroke-width="1"/>`;
-  const rr = r * 0.62;
-  w += `<circle cx="${wx}" cy="${s}" r="${rr}" fill="${rimCol}" stroke="#1F1F23" stroke-width="1.6"/>`;
-  const ca = -55 * Math.PI/180;
-  const cxp = wx + Math.cos(ca) * rr * 0.78, cyp = s + Math.sin(ca) * rr * 0.78;
-  w += `<circle cx="${cxp}" cy="${cyp}" r="${r*0.16}" fill="${calCol}" stroke="#1F1F23" stroke-width="1.2"/>`;
-  const spokeCol = darken(rimCol, 0.45);
-  for (let a = 0; a < 5; a++) {
-    const ang = (-90 + a * 72) * Math.PI / 180;
-    const x2 = wx + Math.cos(ang) * rr * 0.88;
-    const y2 = s + Math.sin(ang) * rr * 0.88;
-    w += `<line x1="${wx}" y1="${s}" x2="${x2}" y2="${y2}" stroke="${spokeCol}" stroke-width="4.5" stroke-linecap="round"/>`;
+  // seams + handles + mirror
+  S.seams.forEach(m=>{const x=X(m);s+=`<path d="M ${x} ${beltAt(x)+4} Q ${x+3} ${(beltAt(x)+sill)/2} ${x+1} ${sill-8}" fill="none" stroke="${detail}" stroke-width="1.3" opacity=".7"/>`;});
+  S.handles.forEach(m=>{const x=X(m);s+=`<line x1="${x-24}" y1="${beltAt(x)+15}" x2="${x}" y2="${beltAt(x)+15}" stroke="${detail}" stroke-width="2.6" stroke-linecap="round" opacity=".85"/>`;});
+  s+=`<line x1="${cowlX+21}" y1="${Y(A.beltF+.02)}" x2="${cowlX+12}" y2="${Y(A.beltF+.1)}" stroke="${detail}" stroke-width="2"/><rect x="${cowlX+3}" y="${Y(A.beltF+.16)}" width="15" height="9" rx="3" fill="${accent}" stroke="#1F1F23" stroke-width="1.2"/>`;
+  // lights
+  const hl=o.lightsOn?'#E4B73C':accent, nY=S.top[0][1];
+  if(S.drl==='square') s+=`<rect x="${x0+6}" y="${Y(topY(0.08)-0.08)}" width="19" height="16" rx="3" fill="${hl}" stroke="#1F1F23" stroke-width="1.4"/><rect x="${x0+10}" y="${Y(topY(0.08)-0.11)}" width="11" height="8" rx="1.5" fill="none" stroke="#1F1F23" stroke-width="1"/>`;
+  else if(S.drl==='flat') { const yy=Y(topY(0.06)-0.09); s+=`<rect x="${x0+5}" y="${yy}" width="${X(0.48)-x0-5}" height="7" rx="2" fill="${hl}" stroke="#1F1F23" stroke-width="1.2"/>`; }
+  else { const dx=0.46; s+=`<path d="M ${x0+4} ${Y(topY(0.03)-0.07)} L ${X(dx)} ${Y(topY(dx)-0.06)} L ${X(dx)} ${Y(topY(dx)-0.10)} L ${x0+5} ${Y(topY(0.03)-0.13)} Z" fill="${hl}" stroke="#1F1F23" stroke-width="1.2"/>`; }
+  let minTop=9; for(let xm=S.length-0.42; xm<=S.length-0.14; xm+=0.02) minTop=Math.min(minTop, topY(xm));
+  const tlY=Math.max(L.rearEnd[1]+0.14, Math.min(minTop-0.08, A.beltR+0.06));
+  s+=`<line x1="${x1-58}" y1="${Y(tlY+.01)}" x2="${x1-20}" y2="${Y(tlY)}" stroke="${o.lightsOn?'#451F23':'#7D7A76'}" stroke-width="5" stroke-linecap="round"/>`;
+  if(o.lightsOn)s+=`<g stroke="#E4B73C" stroke-width="2" stroke-linecap="round" opacity=".8"><line x1="${x0-8}" y1="${Y(topY(0.03)-0.08)}" x2="${x0-48}" y2="${Y(topY(0.03)-0.03)}"/><line x1="${x0-8}" y1="${Y(topY(0.03)-0.12)}" x2="${x0-48}" y2="${Y(topY(0.03)-0.17)}"/></g>`;
+  s+=`<rect x="${ra.xr-2}" y="${beltR+16}" width="12" height="9" rx="2" fill="none" stroke="${detail}" stroke-width="1.5"/>`;
+  // kit
+  if(o.packages.has('keynote')){const fxEnd=fa.xl+6;s+=`<path d="M ${x0-22} ${lipF+13} L ${fxEnd} ${lipF+13} L ${fxEnd} ${lipF-2} L ${x0-8} ${lipF-2} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/><line x1="${x0-16}" y1="${lipF+6}" x2="${fxEnd-6}" y2="${lipF+6}" stroke="${kitLine}" stroke-width="1.2" opacity=".45"/>`;
+    const dx0=ra.xr-4,dx1=x1+14;s+=`<path d="M ${dx0} ${rearY(dx0)-2} L ${x1} ${rE[1]-2} L ${dx1} ${rE[1]+13} L ${dx0} ${rearY(dx0)+13} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
+    for(let i=1;i<=4;i++){const fx=dx0+i*(x1-dx0)/5,yy=rearY(fx);s+=`<line x1="${fx}" y1="${yy-2}" x2="${fx+3}" y2="${yy+13}" stroke="${kitLine}" stroke-width="2"/>`;}}
+  if(o.packages.has('sprint')){const d0=deckX-8,d1=Math.min(x1+2,deckX+124),dy=Y(topY(A.deck));s+=`<g stroke="${kitFill}" stroke-width="5" stroke-linecap="round" fill="none"><line x1="${d0+12}" y1="${dy-2}" x2="${d0+16}" y2="${dy-24}"/><line x1="${d1-16}" y1="${Y(topY(Math.min(S.length-0.05,A.deck+.3)))-2}" x2="${d1-10}" y2="${dy-15}"/><line x1="${d0+2}" y1="${dy-26}" x2="${d1+6}" y2="${dy-13}"/></g><line x1="${d1+6}" y1="${dy-22}" x2="${d1+8}" y2="${dy-4}" stroke="${kitFill}" stroke-width="3.5" stroke-linecap="round"/>`;}
+  if(S.rails){const r0=X(A.aTop+.25),r1=X(A.cBase-.25);s+=`<line x1="${r0}" y1="${Y(S.height)-5}" x2="${r1}" y2="${Y(S.height)-5}" stroke="#1F1F23" stroke-width="3" stroke-linecap="round"/><line x1="${r0+10}" y1="${Y(S.height)-4}" x2="${r0+10}" y2="${Y(S.height)+1}" stroke="#1F1F23" stroke-width="2.5"/><line x1="${r1-10}" y1="${Y(S.height)-4}" x2="${r1-10}" y2="${Y(S.height)+1}" stroke="#1F1F23" stroke-width="2.5"/>`;}
+  if(o.packages.has('workshop')){
+    // box sits on the local surface and leans with it
+    let b0,b1;
+    if(S.openTop){ b0=A.boxStart??A.cBase+.1; b1=A.boxEnd??A.deck-.3; } else { b0=A.aTop+.15; b1=A.cBase-.45; }
+    const bwM=Math.max(0.55, Math.min(1.05, b1-b0)); const bmid=(b0+b1)/2; b0=bmid-bwM/2; b1=bmid+bwM/2;
+    const ySurf=xm=>S.openTop?topY(xm):Math.min(topY(xm),S.height);
+    const yA=Y(ySurf(b0+0.12)), yB=Y(ySurf(b1-0.12)), xA=X(b0+0.12), xB=X(b1-0.12);
+    const ang=Math.atan2(yB-yA,xB-xA)*180/Math.PI;
+    const cx=(xA+xB)/2, cy=(yA+yB)/2 - (S.rails?6:0);
+    const bw=xB-xA+36;
+    s+=`<g transform="rotate(${ang.toFixed(2)} ${cx.toFixed(1)} ${cy.toFixed(1)})">
+      <line x1="${cx-bw/2+18}" y1="${cy-10}" x2="${cx-bw/2+18}" y2="${cy+2}" stroke="#1F1F23" stroke-width="2.5"/>
+      <line x1="${cx+bw/2-18}" y1="${cy-10}" x2="${cx+bw/2-18}" y2="${cy+2}" stroke="#1F1F23" stroke-width="2.5"/>
+      <rect x="${cx-bw/2}" y="${cy-34}" width="${bw}" height="24" rx="11" fill="${kitFill}" stroke="${kitEdge==='none'?'#1F1F23':kitEdge}" stroke-width="1.6"/>
+      <line x1="${cx-bw/2+10}" y1="${cy-24}" x2="${cx+bw/2-10}" y2="${cy-24}" stroke="${kitLine}" stroke-width="1.3" opacity=".55"/>
+      <line x1="${cx+bw/2-34}" y1="${cy-31}" x2="${cx+bw/2-22}" y2="${cy-31}" stroke="#67817F" stroke-width="3" stroke-linecap="round"/>
+    </g>`;
   }
-  w += `<circle cx="${wx}" cy="${s}" r="${r*0.14}" fill="#1F1F23"/>`;
-  return w;
+  // wheels
+  const wheel=(cx,cy,r)=>{let w=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#26262B" stroke="#141416" stroke-width="2.5"/><circle cx="${cx}" cy="${cy}" r="${r-4}" fill="none" stroke="#3A3A40" stroke-width="1"/>`;
+    const rr=r*.72;w+=`<circle cx="${cx}" cy="${cy}" r="${rr}" fill="${rimCol}" stroke="#1F1F23" stroke-width="1.6"/>`;
+    const sp=darken(rimCol,.45);for(let a=0;a<5;a++){const g=(-90+a*72)*Math.PI/180;w+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(g)*rr*.88}" y2="${cy+Math.sin(g)*rr*.88}" stroke="${sp}" stroke-width="4.5" stroke-linecap="round"/>`;}
+    return w+`<circle cx="${cx}" cy="${cy}" r="${r*.13}" fill="#1F1F23"/>`;};
+  s+=wheel(fwx,hubF,fw.r*PX)+wheel(rwx,hubR,rw.r*PX);
+  return s+`</svg>`;
 }
 
 function renderCarSVG() {
   const proj = currentProject();
-  const pt = paint();
   const onSummary = STEPS[state.stepIndex] === 'summary';
-
   if (!proj) {
-    const g = GEO.leadership;
-    const s0 = GROUND - g.r;
-    return `<svg class="stage-svg fadein" viewBox="0 0 900 470" preserveAspectRatio="xMidYMid meet">
+    // ghost silhouette until an ambition is chosen
+    const S = CARS.leadership, ox=(VB_W-S.length*PX)/2, X=m=>+(ox+m*PX).toFixed(1), Y=m=>+(GROUND-m*PX).toFixed(1);
+    const top=S.top.map(p=>[X(p[0]),Y(p[1])]); const [fw,rw]=S.wheels; const sill=Y(S.lower.sill);
+    const d=`M ${X(0)} ${Y(S.lower.front)} L ${top[0][0]} ${top[0][1]}`+cr(top)+` L ${X(S.length)} ${Y(S.lower.rearEnd[1])} L ${X(S.length)} ${sill} L ${X(0)} ${sill} Z`;
+    return `<svg class="stage-svg fadein" viewBox="0 0 ${VB_W} ${VB_H}" preserveAspectRatio="xMidYMid meet">
       <line x1="30" y1="${GROUND}" x2="870" y2="${GROUND}" stroke="#E1E6E5" stroke-width="1.5"/>
-      <path d="${carOutlineD(g)}" fill="none" stroke="#C2CDCC" stroke-width="2.5" stroke-dasharray="8 8" stroke-linejoin="round"/>
-      <circle cx="${g.fw}" cy="${s0}" r="${g.r}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
-      <circle cx="${g.rw}" cy="${s0}" r="${g.r}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
-      <text x="450" y="440" text-anchor="middle" font-family="Arial" font-size="13" fill="#A8A5A1">Choose a project to shape your car</text>
+      <path d="${d}" fill="none" stroke="#C2CDCC" stroke-width="2.5" stroke-dasharray="8 8" stroke-linejoin="round"/>
+      <circle cx="${X(fw.cx)}" cy="${Y(fw.cy)}" r="${fw.r*PX}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
+      <circle cx="${X(rw.cx)}" cy="${Y(rw.cy)}" r="${rw.r*PX}" fill="none" stroke="#C2CDCC" stroke-width="2" stroke-dasharray="8 8"/>
+      <text x="450" y="440" text-anchor="middle" font-family="Arial" font-size="13" fill="#A8A5A1">Choose an ambition to shape your car</text>
     </svg>`;
   }
-
-  const g = GEO[proj.id];
-  const s0 = GROUND - g.r;
-  const aR = g.archR || g.r + 9;
-  const nose = g.pts[0];
-  const noseY = nose[1];
-  const bodyFill = pt.hasPaint ? pt.body : '#F1F4F3';
-  const dark = lum(bodyFill) < 0.35;
-  const detail = dark ? '#F8F5E7' : '#1F1F23';
-  const kitFill = pt.kit || '#1F1F23';
-  const kitEdge = lum(kitFill) > 0.6 ? '#1F1F23' : (dark ? '#F8F5E7' : 'none');
-  const outlineD = carOutlineD(g);
-  const accentCol = pt.accent || (pt.hasPaint ? darken(pt.body, 0.3) : '#A8A5A1');
-  const rimCol = pt.accent || '#C9C7C4';
-  const beltMidY = (g.cowlY + g.deckY) / 2 + 24;
-
-  let s = `<svg class="stage-svg fadein" viewBox="0 0 900 470" preserveAspectRatio="xMidYMid meet">`;
-  s += `<defs><clipPath id="bodyClip"><path d="${outlineD}"/></clipPath></defs>`;
-
-  s += `<line x1="30" y1="${GROUND}" x2="870" y2="${GROUND}" stroke="#E1E6E5" stroke-width="1.5"/>`;
-  s += `<ellipse cx="${(g.x0+g.x1)/2}" cy="${GROUND+3}" rx="${(g.x1-g.x0)/2 + 8}" ry="7" fill="#F2F2F1"/>`;
-
-  if (state.packages.has('deepdive')) {
-    const sx0 = g.fw + aR + 2, sx1 = g.rw - aR - 2;
-    s += `<path d="M ${sx0-10} ${s0-4} L ${sx1+10} ${s0-4} L ${sx1+2} ${s0+12} L ${sx0-2} ${s0+12} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
-    s += `<line x1="${sx0+14}" y1="${s0+4}" x2="${sx1-14}" y2="${s0+4}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.2" opacity="0.45"/>`;
-  }
-
-  // body fill
-  s += `<path d="${outlineD}" fill="${bodyFill}"/>`;
-
-  // tailored livery — everything clipped to the body silhouette
-  s += `<g clip-path="url(#bodyClip)">`;
-  if (pt.nose) {
-    s += `<rect x="${g.x0-10}" y="0" width="${(g.cowlX-g.x0)*0.55 + 10}" height="470" fill="${pt.nose}"/>`;
-  }
-  if (pt.tail) {
-    const tx = g.deckX + (g.x1-g.deckX)*0.35;
-    s += `<rect x="${tx}" y="0" width="${g.x1-tx+20}" height="470" fill="${pt.tail}"/>`;
-  }
-  if (pt.rocker) {
-    s += `<rect x="${g.x0}" y="${s0-17}" width="${g.x1-g.x0}" height="17" fill="${pt.rocker}"/>`;
-  }
-  if (pt.roof) {
-    if (g.openTop) {
-      s += `<rect x="${g.roofX1-6}" y="0" width="${g.x1-g.roofX1+20}" height="${g.deckY+10}" fill="${pt.roof}"/>`;
-    } else {
-      s += `<rect x="${g.roofX0-70}" y="0" width="${g.roofX1-g.roofX0+140}" height="${g.roofY+13}" fill="${pt.roof}"/>`;
-    }
-  }
-  if (pt.stripe) {
-    s += `<path d="M ${g.x0-10} ${g.cowlY+40} Q ${g.cowlX} ${g.cowlY+22} ${(g.cowlX+g.deckX)/2} ${beltMidY} T ${g.x1+10} ${g.deckY+30}"
-      fill="none" stroke="${pt.stripe}" stroke-width="13"/>`;
-  }
-  if (pt.pin) {
-    s += `<path d="M ${g.x0-10} ${g.cowlY+54} Q ${g.cowlX} ${g.cowlY+36} ${(g.cowlX+g.deckX)/2} ${beltMidY+14} T ${g.x1+10} ${g.deckY+44}"
-      fill="none" stroke="${pt.pin}" stroke-width="4"/>`;
-  }
-  if (pt.sillpin) {
-    s += `<rect x="${g.x0}" y="${s0-22}" width="${g.x1-g.x0}" height="3.5" fill="${pt.sillpin}"/>`;
-  }
-  // EV lower intake
-  s += `<rect x="${g.x0+5}" y="${s0-24}" width="${Math.max(20, Math.min(48, g.fw-aR-10-(g.x0+5)))}" height="9" rx="4" fill="#1F1F23" opacity="0.82"/>`;
-  s += `</g>`;
-
-  // outline over livery
-  s += `<path d="${outlineD}" fill="none" stroke="#1F1F23" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
-
-  // fender flares (chunkier on the City EV)
-  const flareW = proj.id === 'sustain' ? 4.5 : 3;
-  [g.fw, g.rw].forEach(wx => {
-    s += `<path d="M ${wx-aR-2} ${s0-3} A ${aR+3} ${aR+3} 0 0 1 ${wx+aR+2} ${s0-3}" fill="none" stroke="${darken(bodyFill,0.28)}" stroke-width="${flareW}" opacity="0.9"/>`;
+  const pt = paint();
+  const svg = drawCar(CARS[proj.id], {
+    body: pt.body, roof: pt.roof, stripe: pt.stripe, rocker: pt.rocker, accent: pt.accent,
+    nose: pt.nose, tail: pt.tail, pin: pt.pin, sillpin: pt.sillpin, kit: pt.kit,
+    packages: state.packages, lightsOn: onSummary, clipId: 'bodyClip'
   });
-
-  // glass / greenhouse
-  if (g.openTop) {
-    s += `<line x1="${g.cowlX+14}" y1="${g.cowlY+8}" x2="${g.roofX0+10}" y2="${g.roofY+8}" stroke="#30373B" stroke-width="4" stroke-linecap="round"/>`;
-  } else {
-    const p1x = g.cowlX+18, p1y = g.cowlY+10;
-    const p4x = g.deckX-10, p4y = g.deckY+4;
-    s += `<path d="M ${p1x} ${p1y} L ${g.roofX0+12} ${g.roofY+9} L ${g.roofX1-6} ${g.roofY+9} L ${p4x} ${p4y} Z"
-      fill="#2A3136" stroke="#1F1F23" stroke-width="1.6"/>`;
-    s += `<line x1="${g.roofX0+26}" y1="${g.roofY+13}" x2="${p1x+22}" y2="${p1y-2}" stroke="#FFFFFF" stroke-width="2.5" opacity="0.22"/>`;
-    const bx = (g.roofX0 + g.roofX1) / 2;
-    s += `<line x1="${bx}" y1="${g.roofY+8}" x2="${bx+3}" y2="${beltYat(g,bx+3)+1}" stroke="${bodyFill}" stroke-width="7"/>`;
-    s += `<line x1="${bx}" y1="${g.roofY+8}" x2="${bx+3}" y2="${beltYat(g,bx+3)+1}" stroke="#1F1F23" stroke-width="1" opacity="0.4"/>`;
-  }
-
-  // door seams + flush handles
-  const seamX0 = g.cowlX + 28, seamX1 = g.deckX - 24;
-  for (let i = 1; i <= g.doors; i++) {
-    const x = seamX0 + (seamX1 - seamX0) * (i / (g.doors + (g.doors === 1 ? 1 : 0.35)));
-    const by = beltYat(g, x) + 4;
-    s += `<path d="M ${x} ${by} Q ${x+3} ${(by+s0)/2} ${x+1} ${s0-8}" fill="none" stroke="${detail}" stroke-width="1.3" opacity="0.7"/>`;
-    s += `<line x1="${x-28}" y1="${by+12}" x2="${x-10}" y2="${by+12}" stroke="${detail}" stroke-width="2.6" stroke-linecap="round" opacity="0.85"/>`;
-  }
-
-  // mirror
-  s += `<line x1="${g.cowlX+12}" y1="${g.cowlY+8}" x2="${g.cowlX+4}" y2="${g.cowlY-4}" stroke="${detail}" stroke-width="2"/>`;
-  s += `<rect x="${g.cowlX-2}" y="${g.cowlY-13}" width="14" height="9" rx="3" fill="${accentCol}" stroke="#1F1F23" stroke-width="1.2"/>`;
-
-  // lights
-  const hlFill = onSummary ? '#E4B73C' : accentCol;
-  if (g.drl === 'square') {
-    s += `<rect x="${g.x0+5}" y="${noseY+3}" width="17" height="14" rx="3" fill="${hlFill}" stroke="#1F1F23" stroke-width="1.4"/>`;
-    s += `<rect x="${g.x0+9}" y="${noseY+7}" width="9" height="6" rx="1.5" fill="none" stroke="#1F1F23" stroke-width="1"/>`;
-  } else {
-    s += `<path d="M ${g.x0+3} ${noseY+8} L ${g.x0+38} ${noseY+3} L ${g.x0+38} ${noseY+10} L ${g.x0+4} ${noseY+16} Z" fill="${hlFill}" stroke="#1F1F23" stroke-width="1.2"/>`;
-  }
-  const tail = g.pts[g.pts.length-1];
-  s += `<line x1="${g.x1-46}" y1="${tail[1]+22}" x2="${g.x1-5}" y2="${tail[1]+22}" stroke="${onSummary ? '#451F23' : '#7D7A76'}" stroke-width="5" stroke-linecap="round"/>`;
-  if (onSummary) {
-    s += `<g stroke="#E4B73C" stroke-width="2" stroke-linecap="round" opacity="0.8">
-      <line x1="${g.x0-8}" y1="${noseY+6}" x2="${g.x0-48}" y2="${noseY}"/>
-      <line x1="${g.x0-8}" y1="${noseY+15}" x2="${g.x0-48}" y2="${noseY+21}"/>
-    </g>`;
-  }
-
-  // charge port
-  s += `<rect x="${g.rw+aR-2}" y="${beltYat(g, g.deckX-14)+18}" width="12" height="9" rx="2" fill="none" stroke="${detail}" stroke-width="1.5"/>`;
-
-  // packages: body kit
-  if (state.packages.has('keynote')) {
-    // front splitter: longer and deeper, with an underline detail
-    s += `<path d="M ${g.x0-24} ${s0+9} L ${g.x0+82} ${s0+9} L ${g.x0+82} ${s0-4} L ${g.x0-10} ${s0-4} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
-    s += `<line x1="${g.x0-20}" y1="${s0+2}" x2="${g.x0+76}" y2="${s0+2}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.2" opacity="0.45"/>`;
-    // rear diffuser: wider blade, four strakes
-    const dx1 = g.x1 - 2, dx0 = g.x1 - 112;
-    s += `<path d="M ${dx0} ${s0-5} L ${dx1+14} ${s0-5} L ${dx1+20} ${s0+9} L ${dx0} ${s0+9} Z" fill="${kitFill}" stroke="${kitEdge}" stroke-width="1.2"/>`;
-    for (let i = 1; i <= 4; i++) {
-      const fx = dx0 + i * (dx1 - dx0) / 5;
-      s += `<line x1="${fx}" y1="${s0-5}" x2="${fx+3}" y2="${s0+9}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="2"/>`;
-    }
-  }
-  if (state.packages.has('sprint')) {
-    const bx0 = g.deckX - 8, bx1 = Math.min(g.x1 + 2, g.deckX + 124);
-    s += `<g stroke="${kitFill}" stroke-width="5" stroke-linecap="round" fill="none">
-      <line x1="${bx0+12}" y1="${g.deckY-2}" x2="${bx0+16}" y2="${g.deckY-24}"/>
-      <line x1="${bx1-16}" y1="${tail[1]-2}" x2="${bx1-10}" y2="${g.deckY-15}"/>
-      <line x1="${bx0+2}" y1="${g.deckY-26}" x2="${bx1+6}" y2="${g.deckY-13}"/>
-    </g>`;
-    // endplate on the wing tip
-    s += `<line x1="${bx1+6}" y1="${g.deckY-22}" x2="${bx1+8}" y2="${g.deckY-4}" stroke="${kitFill}" stroke-width="3.5" stroke-linecap="round"/>`;
-  }
-  if (state.packages.has('workshop')) {
-    const span = g.roofX1 - g.roofX0;
-    const bw = Math.min(158, span - 16);
-    const bx = (g.roofX0 + g.roofX1) / 2 - bw / 2;
-    s += `<line x1="${bx+18}" y1="${g.roofY-8}" x2="${bx+18}" y2="${g.roofY+2}" stroke="#1F1F23" stroke-width="2.5"/>`;
-    s += `<line x1="${bx+bw-18}" y1="${g.roofY-8}" x2="${bx+bw-18}" y2="${g.roofY+2}" stroke="#1F1F23" stroke-width="2.5"/>`;
-    s += `<rect x="${bx}" y="${g.roofY-32}" width="${bw}" height="24" rx="11" fill="${kitFill}" stroke="${kitEdge === 'none' ? '#1F1F23' : kitEdge}" stroke-width="1.6"/>`;
-    // lid seam + Manufaktur stripe detail
-    s += `<line x1="${bx+10}" y1="${g.roofY-22}" x2="${bx+bw-10}" y2="${g.roofY-22}" stroke="${lum(kitFill)>0.6 ? '#1F1F23' : '#F8F5E7'}" stroke-width="1.3" opacity="0.55"/>`;
-    s += `<line x1="${bx+bw-34}" y1="${g.roofY-29}" x2="${bx+bw-22}" y2="${g.roofY-29}" stroke="#67817F" stroke-width="3" stroke-linecap="round"/>`;
-  }
-
-  // wheels
-  const calCol = pt.accent || '#A8A5A1';
-  s += drawWheel(g.fw, s0, g.r, rimCol, calCol);
-  s += drawWheel(g.rw, s0, g.r, rimCol, calCol);
-
-  s += `</svg>`;
-  return s;
+  return svg.replace('<svg ', '<svg class="stage-svg fadein" preserveAspectRatio="xMidYMid meet" ');
 }
 
 /* ================= MOTOR RENDER ================= */
