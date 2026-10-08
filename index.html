@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<!-- Full-screen when launched from the iPad Home Screen -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Implement" />
+<meta name="theme-color" content="#1F1F23" />
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACsklEQVR4nO3cMW4aARRF0XGUfWDJWUwWkSoLS5VFZDEpvJQUSJZjuGQAC5P557S2wMXl/SmQH3a7pwWO+fTRfwD3SxwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIH6fNt3ub5+feaX3t8/HL7V7vPd7wHloO05ThWftxv9jr/nS3HwZU2Hsf1H/qxs7FsPg6uIQ7S9uO45i5MvinLhDi4mDhII+K47DoMvynLkDi4zJQ4zp0Bs7HMiYMLiIM0KI71l8JN2RsUB+cSB2lWHGvuhZvyYlYcnGXLcRz9RufpYTj60419M3S9LcfBlTYex/Uf+rGzsWw+jqPqsngUfWNiHKy0/ThWPpZ6FD20/Ti42Ig4LhuA4bOxDInjqNd3xKPoUVPiOHcGzMYyJw4uMCiOwzHYX5PDm2I29gbFwbmmx+FR9IRZcay5F27Ki1lxcJZxcZweBrPx2rg4WG9iHDUPZuONiXGwkjhIQ+M4vCBuyqEb/Qdj9r5+//ZeL/Xrx8/3eqkydDmWv6fCbBw1Nw7+aXQc+8EwG2V0HJw2PQ6zccL0ODhBHCRxkMRBEgdJHCRxkB52u6eP/hu4U5aDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA7SH/rJWS3IOasXAAAAAElFTkSuQmCC" />
 <title>Build Your Implement Project</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
@@ -27,6 +34,13 @@
   }
 
   * { box-sizing: border-box; }
+  /* Full-screen behaviour on iPad when launched from the Home Screen */
+  html { height: 100%; }
+  body { overscroll-behavior: none; }
+  .app {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
   html, body {
     margin: 0; padding: 0; height: 100%;
     font-family: var(--font-body);
@@ -37,7 +51,7 @@
   }
   button { font-family: var(--font-body); cursor: pointer; }
 
-  .app { width: 100vw; height: 100vh; display: flex; flex-direction: column; position: relative; }
+  .app { width: 100vw; height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; }
 
   header.top {
     display: flex; align-items: center; justify-content: space-between;
