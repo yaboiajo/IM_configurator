@@ -6,8 +6,8 @@
 <!-- Full-screen when launched from the iPad Home Screen -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Transformation Studio" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="IM_ configurator" />
 <meta name="theme-color" content="#1F1F23" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
@@ -42,22 +42,25 @@
   }
   /* Full-screen behaviour on iPad when launched from the Home Screen */
   html { height: 100%; }
-  body { overscroll-behavior: none; }
+  body { overscroll-behavior: none; position: fixed; inset: 0; }
   .app {
+    background: var(--im-white);
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   html, body {
     margin: 0; padding: 0; height: 100%;
     font-family: var(--font-body);
-    background: var(--im-egg);
+    background: var(--im-white);
     color: var(--im-black);
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
   }
   button { font-family: var(--font-body); cursor: pointer; }
 
-  .app { width: 100vw; height: 100vh; height: 100dvh; display: flex; flex-direction: column; position: relative; }
+  .app { position: fixed; inset: 0; width: auto; height: auto; display: flex; flex-direction: column; }
 
   header.top {
     display: flex; align-items: center; justify-content: space-between;
@@ -138,7 +141,7 @@
 
   /* ---------- Staff panel ---------- */
   .staff {
-    position: absolute; inset: 0; z-index: 60;
+    position: fixed; inset: 0; z-index: 60;
     background: rgba(31,31,35,0.55);
     display: none; align-items: center; justify-content: center;
   }
@@ -374,7 +377,7 @@
   .btn:active:not(:disabled) { transform: scale(0.97); }
 
   .attract {
-    position: absolute; inset: 0; background: var(--im-black);
+    position: fixed; inset: 0; background: var(--im-black);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     z-index: 50; transition: opacity 0.4s ease;
   }

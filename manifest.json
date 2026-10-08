@@ -1,6 +1,6 @@
 {
-  "name": "Implement Transformation Studio",
-  "short_name": "Transformation Studio",
+  "name": "IM_ configurator",
+  "short_name": "IM_ configurator",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
